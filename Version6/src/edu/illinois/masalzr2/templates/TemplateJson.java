@@ -7,9 +7,20 @@ import java.util.Map;
 
 import com.google.gson.annotations.Expose;
 
+import edu.illinois.masalzr2.controllers.Environment;
 import edu.illinois.masalzr2.gui.Stamp;
-import edu.illinois.masalzr2.masters.GameVariables;
-import edu.illinois.masalzr2.models.*;
+import edu.illinois.masalzr2.gui.StickerBook;
+import edu.illinois.masalzr2.models.Counter;
+import edu.illinois.masalzr2.models.Dice;
+import edu.illinois.masalzr2.models.GameCard;
+import edu.illinois.masalzr2.models.Player;
+import edu.illinois.masalzr2.models.ListedPath;
+import edu.illinois.masalzr2.models.MonopolizedToken;
+import edu.illinois.masalzr2.models.Property;
+import edu.illinois.masalzr2.models.Railroad;
+import edu.illinois.masalzr2.models.Street;
+import edu.illinois.masalzr2.models.Suite;
+import edu.illinois.masalzr2.models.Utility;
 import lombok.Data;
 
 @Data
@@ -21,16 +32,15 @@ public class TemplateJson {
 	@Expose private Map<String, Utility> utils;
 	private Map<String, Property> properties;
 	@Expose private Map<String, Suite> suites;
-	@Expose private PositionIndex propertyPositions;
+	@Expose private ListedPath propertyPositions;
 	@Expose private List<GameCard> chance;
 	@Expose private List<GameCard> commchest;
 	
 	@Expose private int[][] paintByNumbers;
 	@Expose private String[] icons;
 	@Expose private Stamp[][] stampCollection;
-	@Expose private Map<String, GameToken> playerTokens;
-	@Expose private int[][] stickerBook;
-	@Expose private String[] stickers;
+	@Expose private Map<String, MonopolizedToken> playerTokens;
+	@Expose private StickerBook stickerBook;
 	
 	@Expose private String currency;
 	@Expose private String texture;
@@ -45,6 +55,9 @@ public class TemplateJson {
 	@Expose private Dice dice;
 	
 	@Expose private boolean fancyMoveEnabled;
+	
+	@Expose private String commChestName;
+	@Expose private String chanceName;
 	/*
 	
 	@Expose private Map<String, Player> players;
@@ -63,7 +76,7 @@ public class TemplateJson {
 	@Expose private String texture;
 	 */
 	
-	public TemplateJson(GameVariables gv) {
+	public TemplateJson(Environment gv) {
 		
 		streets = new HashMap<String, Street>();
 		rails = new HashMap<String, Railroad>();
@@ -91,7 +104,6 @@ public class TemplateJson {
 		stampCollection 	= gv.getStampCollection();
 		playerTokens 		= gv.getPlayerTokens();
 		stickerBook 		= gv.getStickerBook();
-		stickers 			= gv.getStickers();
 		currency 			= gv.getCurrency();
 		texture				= gv.getTexture();
 		houseCount 			= gv.getHouseCount();
@@ -101,9 +113,11 @@ public class TemplateJson {
 		limitingTurns		= gv.isLimitingTurns();
 		turnsLimit			= gv.getTurnsLimit();
 		fancyMoveEnabled 	= gv.isFancyMoveEnabled();
+		commChestName 		= gv.getCommChestName();
+		chanceName			= gv.getChanceName();
 		
 		String path = gv.getSaveFile().getParentFile().getParentFile().getPath();
-		System.out.println("Parent path: "+path);
+		//System.out.println("Parent path: "+path);
 		saveFile 			= path+File.separator+texture+File.separator+texture+".mns";
 		
 	}

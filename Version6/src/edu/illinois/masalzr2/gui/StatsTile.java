@@ -32,13 +32,13 @@ public class StatsTile extends JPanel implements ChangeListener{
 	private Player myPlayer;
 	private String currencySymbol;
 	
-	private JPanel labels = new JPanel(new GridLayout(7,1));
+	private JPanel labels = new JPanel(new GridLayout(6,1));
 	//private JLabel name;
 	private Border title;
 	private JLabel icon;
 	private JLabel wealth;
 	private JLabel bank;
-	private JLabel posi;
+	//private JLabel posi;
 	private JLabel card;
 	private JLabel actv;
 	private JLabel prop;
@@ -51,7 +51,9 @@ public class StatsTile extends JPanel implements ChangeListener{
 	/**
 	 * Default constructor. Purpose of this panel is to display all the necessary
 	 * information pertaining to the passed player object needed for game play
+	 * @param i ImageIcon object. The player's associated icon on the board
 	 * @param p	Player object for which to display the current standings
+	 * @param cs String representing the currency Symbol
 	 */
 	public StatsTile(ImageIcon i, Player p, String cs){
 		
@@ -83,7 +85,7 @@ public class StatsTile extends JPanel implements ChangeListener{
 		
 		//name = new JLabel(myPlayer.getName());
 		icon = new JLabel(myIcon);
-		posi = new JLabel("Current Position: "+myPlayer.getPosition());
+		//posi = new JLabel("Current Position: "+myPlayer.getPosition());
 		wealth = new JLabel("Assets: "+currencySymbol+myPlayer.getWealth());
 		colorWealth();
 		bank = new JLabel("Cash: "+currencySymbol+myPlayer.getCash());
@@ -96,7 +98,7 @@ public class StatsTile extends JPanel implements ChangeListener{
 		
 		
 		labels.add(icon);
-		labels.add(posi);
+		//labels.add(posi);
 		labels.add(wealth);
 		labels.add(bank);
 		labels.add(actv);
@@ -140,9 +142,9 @@ public class StatsTile extends JPanel implements ChangeListener{
 	private void colorBank() {
 		Color c;
 		
-		if(myPlayer.getCash() < 700){
+		if(myPlayer.getCash() < 200){
 			c = Color.RED;
-		}else if(myPlayer.getCash() > 1300){
+		}else if(myPlayer.getCash() > 700){
 			c = Color.GREEN;
 		}else{
 			c = Color.YELLOW;
@@ -153,9 +155,9 @@ public class StatsTile extends JPanel implements ChangeListener{
 	
 	public void colorWealth(){
 		Color c;
-		if(myPlayer.getWealth() < 1000){
+		if(myPlayer.getWealth() < 500){
 			c = Color.RED;
-		}else if(myPlayer.getWealth() > 2000){
+		}else if(myPlayer.getWealth() > 1000){
 			c = Color.GREEN;
 		}else{
 			c = Color.YELLOW;
@@ -189,9 +191,12 @@ public class StatsTile extends JPanel implements ChangeListener{
 	public void stateChanged(ChangeEvent arg0) {
 		wealth.setText("Assets: "+currencySymbol+myPlayer.getWealth());
 		bank.setText("Cash: "+currencySymbol+myPlayer.getCash());
-		posi.setText("Current Position "+myPlayer.getPosition());
+		colorBank();
+		//posi.setText("Current Position "+myPlayer.getPosition());
 		card.setText("Get our of Jail Cards: "+myPlayer.getJailCard());
+		colorWealth();
 		actv.setText("Bankrupt: "+myPlayer.isBankrupt());
+		colorActive();
 		
 		if( myPlayer.getProps().size() != propSize ) {
 			JLabel[] fullList = getPropertyList();

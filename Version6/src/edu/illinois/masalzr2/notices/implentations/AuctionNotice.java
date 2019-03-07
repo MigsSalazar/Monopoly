@@ -13,13 +13,15 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import edu.illinois.masalzr2.masters.LogMate;
 import edu.illinois.masalzr2.models.Player;
 import edu.illinois.masalzr2.models.Property;
 import edu.illinois.masalzr2.notices.AbstractNotice;
 import edu.illinois.masalzr2.notices.ListEvent;
 import edu.illinois.masalzr2.notices.ListListener;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 public class AuctionNotice extends AbstractNotice implements ChangeListener {
 	
 	/**
@@ -39,25 +41,25 @@ public class AuctionNotice extends AbstractNotice implements ChangeListener {
 	
 	public AuctionNotice(ListListener ppl, Map<String,Player> pl, Property pr, String c){
 		super(ppl);
-		LogMate.LOG.newEntry("AuctionNotice: Beginning short: Calling Sub Constructor");
+		log.info("AuctionNotice: Beginning short: Calling Sub Constructor");
 		subConstructor(pl, pr, c);
-		LogMate.LOG.newEntry("AuctionNotice: Beginning short: Defining Actions");
+		log.info("AuctionNotice: Beginning short: Defining Actions");
 		defineActions();
 		bidInput(model);
 	}
 	
 	public AuctionNotice(ListListener ppl, Map<String,Player> pl, Property pr, int t, int b, int hb, String c) {
 		super(ppl);
-		LogMate.LOG.newEntry("AuctionNotice: Beginning long: Calling Sub Constructor");
+		log.info("AuctionNotice: Beginning long: Calling Sub Constructor");
 		subConstructor(pl, pr, c);
-		LogMate.LOG.newEntry("AuctionNotice: Beginning long: setting basics");
+		log.info("AuctionNotice: Beginning long: setting basics");
 		turn = t;
 		bid = b;
 		highestBidder = hb;
 	}
 
 	private void subConstructor(Map<String, Player> pl, Property pr, String c) {
-		LogMate.LOG.newEntry("AuctionNotice: Sub Constructor: Setting basics");
+		log.info("AuctionNotice: Sub Constructor: Setting basics");
 		prop = pr;
 		players = pl;
 		List<Player> tempNames = new ArrayList<Player>(pl.values());
@@ -83,17 +85,17 @@ public class AuctionNotice extends AbstractNotice implements ChangeListener {
 	}
 
 	private void buttonPush(ActionEvent e) {
-		LogMate.LOG.newEntry("AuctionNotice: Button Push: Called");
+		log.info("AuctionNotice: Button Push: Called");
 		//bidInput((JTextField)actions[0]);]
 		int value = (Integer)model.getValue();
 		if(e.getSource().equals(actions[1])){
-			LogMate.LOG.newEntry("AuctionNotice: Button Push: Raised");
+			log.info("AuctionNotice: Button Push: Raised");
 			if( value == 0 
 				|| value == bid){
-				LogMate.LOG.newEntry("AuctionNotice: Button Push: Bid not raised. Calling Pass insteead");
+				log.info("AuctionNotice: Button Push: Bid not raised. Calling Pass insteead");
 				((JButton)actions[2]).doClick();
 			}else{
-				LogMate.LOG.newEntry("AuctionNotice: Button Push: Taking new bid");
+				log.info("AuctionNotice: Button Push: Taking new bid");
 				bid = value;
 				highestBidder = turn;
 				turn = (turn+1)%playerNames.size();
@@ -104,7 +106,7 @@ public class AuctionNotice extends AbstractNotice implements ChangeListener {
 			
 			}
 		}else if(e.getSource().equals(actions[2])){
-			LogMate.LOG.newEntry("AuctionNotice: Button Push: Passed. Moving on");
+			log.info("AuctionNotice: Button Push: Passed. Moving on");
 			turn = (turn+1)%playerNames.size();
 			model.setValue(bid+1);
 			setText();

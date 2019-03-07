@@ -6,6 +6,9 @@ import java.util.List;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class Suite implements Serializable{
 	
 	/**
@@ -14,9 +17,12 @@ public class Suite implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private List<Street> streets;
-	@Expose private List<String> names;
-	@Expose private String colorName;
-	@Expose private int colorValue;
+	@Expose 
+	private List<String> names;
+	@Getter @Setter @Expose 
+	private String colorName;
+	@Getter @Setter @Expose 
+	private int colorValue;
 	
 	
 	/**
@@ -27,7 +33,8 @@ public class Suite implements Serializable{
 	 * @param s0 		First Street object
 	 * @param s1		Second Street object
 	 * @param s2 		Third Street object
-	 * @param c 		String object of the Streets color
+	 * @param cn 		String object of the Streets color
+	 * @param cv 		the int RGB value of the suite as gotten from {@link java.awt.Color#getRGB()}
 	 */
 	public Suite(Street s0, Street s1, Street s2, String cn, int cv){
 		
@@ -65,24 +72,23 @@ public class Suite implements Serializable{
 	}
 	
 	public void setStreets(List<Street> s) {
+		if(s == null) {
+			streets = null;
+			return;
+		}
 		s.sort(Street.POSITION_ORDER);
 		streets = s;
 	}
 	
 	public List<String> getNames(){
-		if(names == null) {
-			names= new ArrayList<String>();
-		}
 		return names;
 	}
 	
-	/**
-	 * The String value of the color name. There is no set list of color names so the color can be real
-	 * or gibberish.
-	 * @return 			String - the passed in value of the Suite name
-	 */
-	public String getColor(){
-		return colorName;
+	public void refreshNames() {
+		names = new ArrayList<String>();
+		for(Street s : streets) {
+			names.add(s.getName());
+		}
 	}
 	
 	/**

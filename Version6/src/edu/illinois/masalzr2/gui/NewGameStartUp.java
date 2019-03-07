@@ -27,17 +27,16 @@ import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import edu.illinois.masalzr2.models.GameToken;
+import edu.illinois.masalzr2.models.MonopolizedToken;
 
 
-@SuppressWarnings("serial")
 public class NewGameStartUp implements ActionListener, ChangeListener, KeyListener{
 	
 	private JDialog dialog;
 	
 	private JFrame parent;
 
-	private List<GameToken> tokens;
+	private List<MonopolizedToken> tokens;
 
 	private JPanel playerNums;
 	private JLabel numPrompt;
@@ -60,10 +59,10 @@ public class NewGameStartUp implements ActionListener, ChangeListener, KeyListen
 	//private List<Integer> iconIds;
 	private List<String> names;
 
-	public NewGameStartUp(JFrame p, List<GameToken> t){
+	public NewGameStartUp(JFrame p, List<MonopolizedToken> tokens2){
 		parent = p;
 
-		tokens = t;
+		tokens = tokens2;
 
 		//iconIds = new ArrayList<Integer>();
 		names = new ArrayList<String>();
@@ -341,6 +340,10 @@ public class NewGameStartUp implements ActionListener, ChangeListener, KeyListen
 
 	private class IndexJButton extends JButton{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private int index;
 
 		public IndexJButton(ImageIcon icon, int i){

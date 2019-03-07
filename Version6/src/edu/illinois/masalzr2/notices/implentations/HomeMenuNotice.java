@@ -5,11 +5,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import edu.illinois.masalzr2.masters.GameVariables;
+import edu.illinois.masalzr2.controllers.Environment;
 import edu.illinois.masalzr2.notices.AbstractNotice;
 import edu.illinois.masalzr2.notices.ListEvent;
 import edu.illinois.masalzr2.notices.ListListener;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public class HomeMenuNotice extends HighLevelNotice {
 
 	
@@ -17,7 +19,7 @@ public class HomeMenuNotice extends HighLevelNotice {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public HomeMenuNotice(ListListener ppl, GameVariables gv) {
+	public HomeMenuNotice(ListListener ppl, Environment gv) {
 		super(ppl, gv);
 		text = gv.getCurrentPlayer().getName()+"'s turn. ";
 		defineActions();
@@ -36,10 +38,10 @@ public class HomeMenuNotice extends HighLevelNotice {
 				currentPlayer = gameVars.getCurrentPlayer();
 				
 				int roll = gameVars.roll();
-				int dice1 = gameDice.getLastDice()[0];
-				int dice2 = gameDice.getLastDice()[1];
+				int dice1 = gameDice.getDice()[0];
+				int dice2 = gameDice.getDice()[1];
 				
-				crossGo(currentPlayer, roll);
+				crossGo(roll);
 				
 				AbstractNotice event = moveAndDo(roll);
 				//System.out.println("now painting the event to the frame");
@@ -56,9 +58,8 @@ public class HomeMenuNotice extends HighLevelNotice {
 					}
 				}
 				
-				LOG.newEntry("HomeMenuNotice: actionPerformed: popping self and flushing log");
+				log.info("HomeMenuNotice: actionPerformed: popping self and flushing log");
 				listener.popMe(new ListEvent(this));
-				LOG.flush();
 				
 			}else if(me.equals(actions[1])){
 				

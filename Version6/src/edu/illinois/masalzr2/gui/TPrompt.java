@@ -1,16 +1,25 @@
 package edu.illinois.masalzr2.gui;
 
-import javax.swing.*;
-//import java.util.ArrayList;
-import java.util.Map;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+//import java.util.ArrayList;
+import java.util.Map;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import edu.illinois.masalzr2.masters.GameVariables;
-import edu.illinois.masalzr2.gui.TradeManager;
+import edu.illinois.masalzr2.controllers.Environment;
 import edu.illinois.masalzr2.models.Player;
 import edu.illinois.masalzr2.models.Property;
 
@@ -28,7 +37,7 @@ public class TPrompt extends JDialog {
 	 */
 	private static final long serialVersionUID = 6243394158913772220L;
 
-	private GameVariables gameVars;
+	private Environment gameVars;
 	
 	private TradeManager tManager;
 	
@@ -56,12 +65,12 @@ public class TPrompt extends JDialog {
 	/**
 	 * Only constructor. Requires a parent JFrame, a player 1 whom will make the offer,
 	 * the fill list of active and inactive players, and the Trade Manager object that called this object
-	 * @param parent	Parent JFrame
+	 * @param gv		Environment object that defines the game
 	 * @param pl		Player 1: player who will make an offer
-	 * @param players2		Full ArrayList of all active and inactive players
+	 * @param players2	Full ArrayList of all active and inactive players
 	 * @param tm		Trade Manager object that called this object
 	 */
-	public TPrompt(GameVariables gv, Player pl, Map<String, Player> players2, TradeManager tm){
+	public TPrompt(Environment gv, Player pl, Map<String, Player> players2, TradeManager tm){
 		super(gv.getFrame(), "Trade Manager - Step 1", true);
 		gameVars = gv;
 		tManager = tm;

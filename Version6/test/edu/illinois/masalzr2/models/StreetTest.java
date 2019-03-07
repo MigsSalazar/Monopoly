@@ -1,6 +1,6 @@
 package edu.illinois.masalzr2.models;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -22,6 +22,11 @@ public class StreetTest {
 	}
 
 	@Test
+	public void testStreetStringIntIntStringBooleanArrayListOfChangeListenerIntIntIntArray() {
+		fail("Not yet implemented");
+	}
+
+	@Test
 	public void testStreet() {
 		fail("Not yet implemented");
 	}
@@ -32,12 +37,17 @@ public class StreetTest {
 	}
 
 	@Test
+	public void testGetRentInt() {
+		fail("Not yet implemented");
+	}
+
+	@Test
 	public void testGetGrade() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	public void testGetRentInt() {
+	public void testGetUpgradeCost() {
 		fail("Not yet implemented");
 	}
 

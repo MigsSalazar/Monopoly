@@ -9,6 +9,9 @@ import javax.swing.ImageIcon;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 public class GameToken implements Serializable{
 	
@@ -17,16 +20,17 @@ public class GameToken implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Expose private String pieceDir;
-	
+	@Getter @Setter 
 	private transient ImageIcon piece;
-	@Expose private int[] coords;
+	@Getter @Setter @Expose 
+	private int team;
+	@Getter @Setter @Expose
+	private String pieceDir;
 	
-	@Expose private int team;
+	public static final transient Comparator<GameToken> TEAM_ORDER = new SortByTeam();
+	public static final transient Comparator<GameToken> ICON_ORDER = new SortByIcon();
 	
-	@Expose private PositionIndex path;
-	
-	public GameToken(int t, String dir, PositionIndex p){
+	public GameToken(int t, String dir){
 		
 		team = t;
 		
@@ -34,46 +38,6 @@ public class GameToken implements Serializable{
 		
 		giveIconPath(dir);
 		
-		path = p;
-		
-		coords = path.getCoords();
-		
-	}
-	
-	
-	public int getX(){
-		return coords[1];
-	}
-	
-	public int getY(){
-		return coords[0];
-	}
-	
-	public void setTeam(int t){
-		team = t;
-	}
-	
-	public int getTeam(){
-		return team;
-	}
-	
-	public ImageIcon getPiece(){
-		return piece;
-	}
-	
-	public String getPieceDir() {
-		return pieceDir;
-	}
-	
-	public void movePiece(int m){
-		if(path.isLocked()){
-			return;
-		}
-		coords = path.move(m);
-	}
-	
-	public PositionIndex getPath(){
-		return path;
 	}
 	
 	public boolean giveIconPath(String dir){
@@ -95,23 +59,6 @@ public class GameToken implements Serializable{
 			piece = new ImageIcon(pieceDir);
 		}
 		
-	}
-	
-	public int[] useSpecialtyCase(int s){
-		coords = path.getSpecialCase(s);
-		return coords;
-	}
-	
-	public void setLocked(boolean l){
-		path.setLocked(l);
-	}
-	
-	public static Comparator<GameToken> getTeamComparator(){
-		return new SortByTeam();
-	}
-	
-	public static Comparator<GameToken> getIconComparator(){
-		return new SortByIcon();
 	}
 	
 	private static class SortByTeam implements Comparator<GameToken>{

@@ -4,8 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -15,14 +15,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import edu.illinois.masalzr2.masters.GameVariables;
+import edu.illinois.masalzr2.controllers.Environment;
 import edu.illinois.masalzr2.models.Player;
 import edu.illinois.masalzr2.models.Property;
 
 
 public class MortgageManager extends JDialog implements ActionListener{
 
-	private GameVariables gameVars;
+	private Environment gameVars;
 	private Player player;
 	private Map<String,Property> props;
 	
@@ -47,7 +47,7 @@ public class MortgageManager extends JDialog implements ActionListener{
 	 */
 	private static final long serialVersionUID = -8977446161365190615L;
 
-	public MortgageManager(GameVariables gv, Player pl) {
+	public MortgageManager(Environment gv, Player pl) {
 		super(gv.getFrame(), "Mortgage Manager", true);
 		gameVars = gv;
 		player = pl;
@@ -177,14 +177,14 @@ public class MortgageManager extends JDialog implements ActionListener{
 			if(curProp.isMortgaged()){
 				if( !setUnmort.isEnabled() ){
 					JOptionPane.showMessageDialog(this, "You have payed of the mortgage on:"+curProp.getName());
-					curProp.setMBool(false);
+					curProp.setMortgaged(false);
 					int payout = (curProp.mortgageValue() + (int)(curProp.mortgageValue() * 0.1) );
 					player.subCash(payout);
 				}
 			}else if(!curProp.isMortgaged()){
 				if( !setMort.isEnabled() ){
 					JOptionPane.showMessageDialog(this, "You have taken out a mortgage on:\n"+curProp.getName());
-					curProp.setMBool(true);
+					curProp.setMortgaged(true);
 					player.addCash(curProp.mortgageValue());
 					setUnmort.setEnabled((int)(curProp.getLiquidationWorth() * 0.1) < player.getCash());
 				}

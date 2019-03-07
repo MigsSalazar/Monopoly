@@ -5,10 +5,8 @@ import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class Counter implements Serializable{
-	
 	/**
 	 * 
 	 */
@@ -16,9 +14,9 @@ public class Counter implements Serializable{
 	
 	@Getter @Expose
 	private int count;
-	@Getter @Setter @Expose
+	@Getter @Expose
 	private int max;
-	@Getter @Setter @Expose 
+	@Getter @Expose 
 	private int min;
 	
 	public Counter(){
@@ -41,23 +39,35 @@ public class Counter implements Serializable{
 	
 	public void setCount(int c) {
 		count = c;
-		if( max > min) {
+		if(max <= min) {
+			return;
+		}
+		if(count > max) {
 			count %= max;
 		}
+		if(count < min) {
+			count = min;
+		}
+	}
+	
+	public void setMax(int m) {
+		max = m;
+		setCount(count);
+	}
+	
+	public void setMin(int m) {
+		min = m;
+		setCount(count);
 	}
 	
 	public int add(int a){
 		count += a;
-		count = count % max;
+		setCount(count);
 		return count;
 	}
 	
 	public int sub(int s){
-		count -= s;
-		if(count < min) {
-			count = min;
-		}
-		return count;
+		return add(s * -1);
 	}
 	
 }

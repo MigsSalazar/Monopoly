@@ -4,8 +4,8 @@ import java.awt.Color;
 import java.util.Scanner;
 
 import edu.illinois.masalzr2.Starter;
+import edu.illinois.masalzr2.controllers.Environment;
 import edu.illinois.masalzr2.io.GameIo;
-import edu.illinois.masalzr2.masters.GameVariables;
 import edu.illinois.masalzr2.models.Player;
 import edu.illinois.masalzr2.models.Property;
 import edu.illinois.masalzr2.models.Street;
@@ -15,7 +15,7 @@ import lombok.Data;
 @Data
 public class TesterFrame {
 	
-	GameVariables gv;
+	Environment gv;
 	
 	public static void main(String[] args){
 		TesterFrame tf = new TesterFrame();

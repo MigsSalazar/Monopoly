@@ -1,26 +1,33 @@
 package edu.illinois.masalzr2.gui;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import edu.illinois.masalzr2.masters.GameVariables;
-import edu.illinois.masalzr2.gui.TradeManager;
-import edu.illinois.masalzr2.models.Player;
-import edu.illinois.masalzr2.models.Property;
-import edu.illinois.masalzr2.models.Street;
-
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.event.DocumentListener;
-import javax.swing.event.DocumentEvent;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import edu.illinois.masalzr2.controllers.Environment;
+import edu.illinois.masalzr2.models.Player;
+import edu.illinois.masalzr2.models.Property;
+import edu.illinois.masalzr2.models.Street;
 
 /**
  * Called by the Trade Manager. This specialized JDialog manages the first player's offer for the second player's asset
@@ -35,7 +42,7 @@ public class TOffer extends JDialog implements ListSelectionListener{
 
 	private TradeManager tManage;
 	
-	private GameVariables gameVars;
+	private Environment gameVars;
 	
 	private Player player1;
 	
@@ -77,11 +84,12 @@ public class TOffer extends JDialog implements ListSelectionListener{
 	/**
 	 * Default constructor. Requires the parent JFrame, a Player who
 	 * wishes to make an offer, and the Trade Manager object that called this JDialog
-	 * @param frame	parent JFrame
-	 * @param p		Player who wishes to make an offer
-	 * @param tm	Trade Manager object that called this JDialog
+	 * @param frame		parent JFrame used as a reference point for any resulting containers
+	 * @param gv 		The Environment variable defining the game		
+	 * @param p			Player who wishes to make an offer
+	 * @param tm		Trade Manager object that called this JDialog
 	 */
-	public TOffer(JFrame frame, GameVariables gv, Player p, TradeManager tm){
+	public TOffer(JFrame frame, Environment gv, Player p, TradeManager tm){
 		super(frame, "Trade Manager - Step 2", true);
 		gameVars = gv;
 		player1 = p;

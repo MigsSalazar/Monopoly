@@ -5,9 +5,9 @@ import java.io.Serializable;
 
 import javax.swing.JComponent;
 
-import edu.illinois.masalzr2.masters.LogMate;
-import edu.illinois.masalzr2.masters.LogMate.Logger;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 public abstract class AbstractNotice implements ActionListener, Serializable {
 	/**
 	 * 
@@ -16,7 +16,6 @@ public abstract class AbstractNotice implements ActionListener, Serializable {
 	protected String text;
 	protected JComponent[] actions;
 	protected ListListener listener;
-	protected static Logger LOG = LogMate.LOG;
 	
 	public AbstractNotice(ListListener ppl){
 		text = "This is the default notice";
@@ -49,8 +48,8 @@ public abstract class AbstractNotice implements ActionListener, Serializable {
 	}
 	
 	protected void noticePushPop(AbstractNotice an) {
-		LOG.newEntry(this.getClass().getName() + ": "+text);
-		LOG.newEntry(this.getClass().getName() + ": noticePushPop: Pushing new " + an.getClass().getName() + " onto listener's queue and poping self");
+		log.debug("{}: {}", this.getClass().getName(), text);
+		log.debug("{}: noticePushPop: Pushing new {} onto listener's queue and poping self", this.getClass().getName(), an.getClass().getName());
 		listener.pushMe(new ListEvent(an));
 		listener.popMe(new ListEvent(this));
 	}

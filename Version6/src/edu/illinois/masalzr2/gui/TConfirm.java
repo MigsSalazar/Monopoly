@@ -1,16 +1,21 @@
 package edu.illinois.masalzr2.gui;
 
-import javax.swing.*;
-
-import edu.illinois.masalzr2.masters.GameVariables;
-import edu.illinois.masalzr2.gui.TradeManager;
-import edu.illinois.masalzr2.models.Player;
-import edu.illinois.masalzr2.models.Property;
-
-import java.util.List;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import edu.illinois.masalzr2.controllers.Environment;
+import edu.illinois.masalzr2.models.Player;
+import edu.illinois.masalzr2.models.Property;
 
 /**
  * Used by the Trade Manager. This specialized JDialog manages the final confrimation of the trade
@@ -24,7 +29,7 @@ public class TConfirm extends JDialog {
 	 */
 	private static final long serialVersionUID = 3596160266999363362L;
 
-	private GameVariables gameVars;
+	private Environment gameVars;
 	
 	private Player player1;
 	private Player player2;
@@ -50,14 +55,14 @@ public class TConfirm extends JDialog {
 	 * Default constructor. Object requires a parent JFrame, a player who wants an asset, a player
 	 * who holds the desired asset, the desired asset, an ArrayList of assets that is being offered
 	 * and the Trade Manager object that called this JDialog
-	 * @param frame	Parent JFrame
+	 * @param gv 	Environment variable. This is the correlating game object.
 	 * @param p1	Player 1: player who wants to make an offer
 	 * @param p2	Player 2: player who holds the desired asset
 	 * @param ta	The desired asset held by player 2
 	 * @param oa	An ArrayList of offered assets held by player 1
 	 * @param tm	The Trade Manager object that called this JDialog
 	 */
-	public TConfirm(GameVariables gv, Player p1, Player p2, Object ta, List<Object> oa, TradeManager tm){
+	public TConfirm(Environment gv, Player p1, Player p2, Object ta, List<Object> oa, TradeManager tm){
 		super(gv.getFrame(), "Trade Manager - Step 3", true);
 		gameVars = gv;
 		player1=p1;
