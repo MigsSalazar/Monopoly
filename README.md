@@ -25,3 +25,17 @@ And you should be all set! Go ahead and try to un it! (I'm sorry)
 ### Used Open Source Projects for V5
 I only used [Junit 1.4](https://junit.org/junit4/) and [Google's Gson](https://github.com/google/gson). Unfortunately, I never used Maven or Gradel (or any other dependency manager) sooo.... the compiled jars are included within this project. I don't remember seeing anywhere where that's wrong to do, my bad if it is, but if this project seems even bigger than it should be, that might be why.
 
+## Monopoly 6
+Now this one I'm rather proud of (but I'm slowly disowning it like I've done the last two). The goal of this version was to generalize and optimize the board such that it was open to texture packs. In other words, the board shouldn't care about the resources input, so long as it fit a simple format, it could load it. And for the most part, it worked. I managed to make a texture for a company that I was interning at which worked beautifully after some debugging. Granted, I knew what everything meant so it wasn't simple for someone else to learn. On top of that, the configuring .json file was huge! Using Gson's "pretty printing", the file was upwards for 10k lines! (granted, each element of an array, even a 30x30 2D array, was given it's own line, which accounted for most of that bulk) Without "pretty printing" though, that would all get compressed onto 1 line. But the goal was acheived and the project was better, so overall, this was a success.
+
+### How to run Monopoly 6
+Finally, a project that uses a dependency manager. That took way longer than it should have. (I blame my first uni that refused to teach its students about them). So for this project, you need maven and preferably you want to ignore failed tests since... well... I haven't implemented many of them. For that, you want to package the project in the following way:
+`mvn package -Dmaven.test.failure.ignore=true`
+After that, take the created jar, slap it in the same directory as the "resources" and "textures" folders. Sorry I didn't follow Maven conventions. That has to come in the next version
+
+### Used Open Sources Project for V6
+1. [Project Lombok](https://projectlombok.org/) for handling all the boiler plate
+2. [Google's Gson](https://github.com/google/gson) for reading and writing json files
+3. [Junit 1.4](https://junit.org/junit4/) for unit testing (who would have guessed)
+4. [Mockito](https://site.mockito.org/) for behavior testing
+All of these free source softwares now hold a special place in my heart for making my life easier. Thank you all. My code does not deserve any of you
