@@ -42,7 +42,7 @@ Now this one I'm rather proud of (but I'm slowly disowning it like I've done the
 
 ### How to run Monopoly 6
 
-Finally, a project that uses a dependency manager. That took way longer than it should have. (I blame my first uni that refused to teach its students about them). So for this project, you need maven and preferably you want to ignore failed tests since... well... I haven't implemented many of them. For that, you want to package the project in the following way:
+Finally, a project that uses a dependency manager. That took way longer than it should have. (I blame my first uni that refused to teach its students about maven, gradle, or even pip. Seriously! Not even pip!?). So for this project, you need maven and, if you use an IDE, Project Lombok. Thankfully, that's not as bad as it sounds. Project Lombok has everything you need to know [here](https://projectlombok.org/) to install it on your IDE or to just run out of the box with Maven or Javac. To run with maven, preferably, you want to ignore failed tests since... well... I haven't implemented many of them. For that, you want to package the project in the following way:
 
 `mvn package -Dmaven.test.failure.ignore=true`
 
@@ -50,9 +50,10 @@ After that, take the created jar, slap it in the same directory as the "resource
 
 ### Used Open Sources Project for V6
 
-1. [Project Lombok](https://projectlombok.org/) for handling all the boiler plate
+1. [Project Lombok](https://projectlombok.org/) for writing miles of boiler plate code
 2. [Google's Gson](https://github.com/google/gson) for reading and writing json files
-3. [Junit 1.4](https://junit.org/junit4/) for unit testing (who would have guessed)
-4. [Mockito](https://site.mockito.org/) for behavior testing
+3. [Apache Log4j 2](https://logging.apache.org/log4j/2.x/) for translating dolphins (logging)
+4. [Junit 1.4](https://junit.org/junit4/) for crying over Harambe (unit testing)
+5. [Mockito](https://site.mockito.org/) for behavior testing
 
 All of these free source softwares now hold a special place in my heart for making my life easier. Thank you all. My code does not deserve any of you
