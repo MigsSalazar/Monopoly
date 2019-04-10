@@ -75,6 +75,7 @@ public class Start {
 		
 		b.setOverlay(book);
 		/*
+		 * USE THIS IF YOU WANT TO ADD TONS OF STICKERS
 		JButton shitButton = new JButton("Add Sticker!");
 		shitButton.addActionListener(
 			(e) -> stickerUp()
@@ -83,10 +84,20 @@ public class Start {
 		fek.add(shitButton, BorderLayout.SOUTH);
 		*/
 		
+		
+		
+		/*
+		 * USE THIS TO MOVE ONE STICKER TO RANDOM PLACES
+		Timer timeMe = new Timer( 1000, 
+			(e) -> bootRunner()
+		);
+		//timeMe.start();
+		*/
+		
+		
+		//TEST USED TO FIGURE OUT FINE PLACEMENTS OF STICKERS
 		double x = Math.random();
 		double y = Math.random();
-		//double w = Math.random();
-		//double h = Math.random();
 		
 		Sticker boot = new Sticker("default","boot.png");
 		boot.setBorderSize(10);
@@ -94,16 +105,14 @@ public class Start {
 		boot.setFillColor(Color.BLUE);
 		stickerName = book.addStickerToPage("base", boot, 0.0, 0.079*11, 0.035, 0.035);
 		pageName = "base";
-		/*
-		Timer timeMe = new Timer( 1000, 
-			(e) -> bootRunner()
-		);
-		*/
+		//TEST ENDS
+		
+		
 		temp.pack();
 		//temp.setOpacity(1);
 		//temp.setResizable(false);
 		temp.setVisible(true);
-		//timeMe.start();
+		
 	}
 
 	static void bootRunner(){
