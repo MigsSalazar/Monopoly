@@ -1,5 +1,7 @@
 package monopoly7.gui;
 
+import monopoly7.models.Coordinates;
+
 public class PathTranslator implements Translatable {
 
 	public static final int PATHTRANSLATOR_NO_LOOP = 0;

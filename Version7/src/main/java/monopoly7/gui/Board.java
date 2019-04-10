@@ -1,15 +1,20 @@
 package monopoly7.gui;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.flogger.Flogger;
+
+@Flogger
 public class Board extends JPanel{
 
 	/**
@@ -20,12 +25,14 @@ public class Board extends JPanel{
 	private Image unscaledBaseBoard;
 	private Map<Integer, Map<Integer,Image>> scaledBaseBoard;
 	private Dimension scales;
+	@Getter @Setter
+	private BufferedRender overlay;
 	
 	public Board( File base, Dimension scale ){
 		super();
 		assert base.exists();
 		scales = scale;
-		
+		overlay = null;
 		initializeBaseBoards(base);
 	}
 	
@@ -33,7 +40,7 @@ public class Board extends JPanel{
 		super();
 		assert base.exists();
 		scales = new Dimension( width, height );
-		
+		overlay = null;
 		initializeBaseBoards(base);
 	}
 	
@@ -42,13 +49,13 @@ public class Board extends JPanel{
 	}
 	
 	public void setScales( int w, int h ){
-		int wRemainder = w % 10;
-		int hRemainder = h % 10;
-		if( wRemainder != 0 ){
-			w -= wRemainder;
+		w -= ( w % 10 );
+		h -= ( h % 10 );
+		if( w <= 0 ){
+			w = 1;
 		}
-		if( hRemainder != 0 ){
-			h -= hRemainder;
+		if( h <= 0 ){
+			h = 1;
 		}
 		scales.setSize(w, h);
 	}
@@ -87,6 +94,10 @@ public class Board extends JPanel{
 		super.paintComponent(g);
 		//this.prepareImage(baseBoard, null);
 		g.drawImage(getScaledBaseBoard( Image.SCALE_AREA_AVERAGING ), 0, 0, null);
+		if( overlay != null ){
+			log.atFiner().atMostEvery(20, TimeUnit.SECONDS).log("overlay is not null");
+			g.drawImage(overlay.render(), 0, 0, null);
+		}
 	}
 	
 	
