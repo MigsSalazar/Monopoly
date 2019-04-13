@@ -2,8 +2,8 @@ package monopoly7.gui;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,13 +11,45 @@ import lombok.*;
 import monopoly7.models.Coordinates;
 import monopoly7.models.RelativeDimensions;
 
+/**
+ * A record of Stickers, their names, their relative positions, and their relative dimensions.
+ * All relative values are calculated as percentages of the width and height of the page.
+ * <br>
+ * So a sticker with relative coordinates x=0.1 and y=0.1
+ * <br>
+ * and relative size of width=0.2 and height=0.3
+ * <br>
+ * on a page that is 300x150 pixels will have it's top left corner at pixel coordinates
+ * (20,15) and be 60 pixels wide by 45 pixels tall.
+ * 
+ * @author Miguel Salazar
+ * @see monopoly7.gui.Sticker
+ */
 @RequiredArgsConstructor
 public class StickerPage extends BufferedRender{
 	
+	/**
+	 * The relative coordinates of all the Stickers
+	 */
 	private Map<String, Coordinates> coords = new HashMap<String, Coordinates>();
+	
+	/**
+	 * The relative dimensions of all the Stickers
+	 */
 	private Map<String, RelativeDimensions> sizes = new HashMap<String, RelativeDimensions>();
+	
+	/**
+	 * Map of every Sticker and its name
+	 */
 	private Map<String, Sticker> stickers = new HashMap<String,Sticker>();
-	private List<String> paintOrder = new LinkedList<String>();
+	
+	/**
+	 * Stores all the names of the stickers and the order in which they will be rendered.
+	 * If the order is untouched, the stickers will be rendered in a FIFO fashion. That is,
+	 * the earlier the sticker was added, the sooner it will be rendered, with later Stickers
+	 * being added closer to the top layer if Stickers overlap
+	 */
+	private List<String> paintOrder = new ArrayList<String>();
 	
 	@NonNull @Getter
 	private int width;
@@ -36,31 +68,6 @@ public class StickerPage extends BufferedRender{
 			height = h;
 			dirty = true;
 		}
-	}
-	@Override
-	public Image render(){
-		
-		if( isRenderNeeded() ){
-			lastRender = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-			for( String s : paintOrder ){
-				Coordinates c = coords.get(s);
-				RelativeDimensions rd = sizes.get(s);
-				Sticker stick = stickers.get(s);
-				
-				int x = (int)(width*c.getX());
-				int y = (int)(height*c.getY());
-				int w = (int)(width*rd.getWidth());
-				int h = (int)(height*rd.getHeight());
-				
-				Image scaled = stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING);
-				
-				lastRender.getGraphics().drawImage(scaled, x, y, null);
-				
-			}
-			dirty = false;
-		}
-		
-		return lastRender;
 	}
 	
 	public void setPaintPriority( String s, int l ){
@@ -161,11 +168,62 @@ public class StickerPage extends BufferedRender{
 		return ret;
 	}
 	
-	private boolean existsOnPage(String s) {
+	public int removeAllStickerOf( Sticker s ){
+		if( s == null ){
+			return -1;
+		}
+		if( !stickers.containsValue(s) ){
+			return 0;
+		}
+		int ret = 0;
+		List<String> allNames = new ArrayList<String>( paintOrder );
+		for( String name : allNames ){
+			if( stickers.get(name).equals(s) ){
+				paintOrder.remove(name);
+				coords.remove(name);
+				sizes.remove(name);
+				stickers.remove(name);
+				ret++;
+			}
+		}
+		return ret;
+	}
+	
+	public boolean existsOnPage(String s) {
 		return coords.containsKey(s) &&
 				sizes.containsKey(s) &&
 				stickers.containsKey(s) &&
 				paintOrder.contains(s);
 	}
+	
+	public boolean existsOnPage( Sticker s ){
+		return stickers.containsValue(s);
+	}
 
+	@Override
+	public Image render(){
+		
+		if( isRenderNeeded() ){
+			lastRender = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+			for( String s : paintOrder ){
+				Coordinates c = coords.get(s);
+				RelativeDimensions rd = sizes.get(s);
+				Sticker stick = stickers.get(s);
+				
+				int x = (int)(width*c.getX());
+				int y = (int)(height*c.getY());
+				int w = (int)(width*rd.getWidth());
+				int h = (int)(height*rd.getHeight());
+				
+				Image scaled = stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING);
+				
+				lastRender.getGraphics().drawImage(scaled, x, y, null);
+				
+			}
+			dirty = false;
+		}
+		
+		return lastRender;
+	}
+	
 }

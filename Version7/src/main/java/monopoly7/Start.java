@@ -21,29 +21,34 @@ import monopoly7.io.ImageUtil;
 @Flogger
 public class Start {
 	
+	/**
+	 * Determines if the project is running from a non-packaged maven project
+	 * and updates the user.dir appropriately such that resources can be used 
+	 */
 	static{
 		String FILESEP = System.getProperty("file.separator");
 		String userDevDir = System.getProperty("user.dir")+FILESEP+"src"+FILESEP+"main"+FILESEP;
 		File f = new File( userDevDir );
 		if( f.isDirectory() ){
-			System.out.println("userDevDir exists");
+			//System.out.println("userDevDir exists");
+			log.atWarning().log("Developer mode discovered. Resetting user.dir");
 			System.setProperty("user.dir", userDevDir);
-		}else{
-			System.out.println("userDevDir DOES NOT EXIST");
-			System.out.println(userDevDir);
 		}
 	}
 	
+	//=======================THESE ARE ALL TEMPORARY=========================
+	//DO NOT USE OR UPDATE WITH THESE. THEY SKELETON OBJECTS USED FOR TESTING
 	static JFrame temp;
 	static Board b;
 	static StickerBook book;
 	static String stickerName;
 	static String pageName;
+	//======================END OF TEMPORARY VARIABLES=======================
 
 	public static void main(String[] args) {		
 		
-		File f = new File("C:\\Users\\Unknown\\Desktop\\monopoly board.jpg");
-		
+		//File f = new File("C:\\Users\\Unknown\\Desktop\\monopoly board.jpg");
+		File f = new File(ImageUtil.TEXTURES + "default" + ImageUtil.FILESEP + "monopoly board.jpg" );
 		//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		//Board b = new Board(f, screenSize.width, screenSize.height);
 		b = new Board(f, 500, 500);
@@ -103,7 +108,7 @@ public class Start {
 		boot.setBorderSize(10);
 		boot.setBorder(2*3*5*7);
 		boot.setFillColor(Color.BLUE);
-		stickerName = book.addStickerToPage("base", boot, 0.0, 0.079*11, 0.035, 0.035);
+		stickerName = book.addStickerToPage("base", boot, 0.0, 0.079*11, 0.04, 0.04);
 		pageName = "base";
 		//TEST ENDS
 		
@@ -115,6 +120,11 @@ public class Start {
 		
 	}
 
+	/**
+	 * TEMPORARY METHOD
+	 * <br>
+	 * NEVER USE FOR ANYTHING
+	 */
 	static void bootRunner(){
 		double x = Math.random();
 		double y = Math.random();
@@ -129,6 +139,11 @@ public class Start {
 		
 	}
 	
+	/**
+	 * TEMPORARY METHOD
+	 * <br>
+	 * NEVER USE FOR ANYTHING
+	 */
 	static void stickerUp(){
 		Sticker boot = new Sticker("default","boot.png");
 		double x = Math.random();

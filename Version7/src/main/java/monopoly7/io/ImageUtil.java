@@ -8,20 +8,64 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+/**
+ * In a lot of ways, this is a logging and directory managing
+ * wrapper class for ImageIO. This class handles try/catches for
+ * ImageIO's functions as well as defining needed directories
+ * used for the project.
+ * 
+ * @author Miguel Salazar
+ *
+ */
 @Flogger
 public class ImageUtil {
 	
+	/**
+	 * Copies directly from the "user.dir" property within the System Properties
+	 */
 	public static final String HOMEDIR = System.getProperty("user.dir");
+	/**
+	 * Copies directly from the "file.separator" property within the System Properties
+	 */
 	public static final String FILESEP = System.getProperty("file.separator");
+	/**
+	 * Short for "resource directory", it defines the resource directory from within the home directory
+	 */
 	public static final String RESCDIR = HOMEDIR + FILESEP + "resources" + FILESEP;
+	/**
+	 * Appends to the resource directory the texture directory used for defining different textures
+	 */
 	public static final String TEXTURES = RESCDIR + "textures" + FILESEP;
-	public static final String FILE404 = RESCDIR + "textures" + FILESEP + "404.png";
+	/**
+	 * Selects the 404 image file used when an image cannot be found given the path
+	 */
+	public static final String FILE404 = TEXTURES + "404.png";
 	
-	public static Image openImage( String dir ){
-		File f = new File( TEXTURES + dir );
+	/**
+	 * Parses the passed in path into a File object and then calls {@link #openImage(File)}
+	 * @param dir	an array of a separated file path. This is done to handle file path separators
+	 * without worrying about the OS
+	 * @return	the requested image from the passed in file
+	 */
+	public static Image openImage( String... dir ){
+		StringBuilder sb = new StringBuilder();
+		sb.append(TEXTURES);
+		for( int i=0; i<dir.length; i++ ){
+			sb.append(dir[i]);
+			if( i != dir.length - 1 ){
+				sb.append(FILESEP);
+			}
+		}
+		File f = new File( sb.toString() );
 		return openImage(f);
 	}
 	
+	/**
+	 * Generates an Image file from the passed in file. Upon failure, an exception
+	 * is thrown and a 404 image is returned instead.
+	 * @param f	file of the image to generate
+	 * @return	the requested image. If reading the file fails, a 404 image is returned instead
+	 */
 	public static Image openImage( File f ){
 		log.atInfo().log("Open Image: file to load="+f.getAbsolutePath());
 		try{

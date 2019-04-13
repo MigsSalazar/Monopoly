@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>edu.illinois.masalzr2</groupId>
 	<artifactId>monopoly7</artifactId>
-	<version>0.0.1-28/04/19</version>
+	<version>0.0.1-28May2019</version>
 	<name>Monopoly7</name>
 	<dependencies>
 		<dependency>
@@ -46,6 +46,11 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.1.0</version>
 			</plugin>
 		</plugins>
 	</build>

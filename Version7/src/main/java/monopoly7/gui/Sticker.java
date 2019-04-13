@@ -9,8 +9,10 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import lombok.Getter;
+import lombok.extern.flogger.Flogger;
 import monopoly7.io.ImageUtil;
 
+@Flogger
 public class Sticker extends BufferedRender{
 	
 	public static final int ITALIC = Font.ITALIC;
@@ -20,7 +22,7 @@ public class Sticker extends BufferedRender{
 	
 	private Image picture;
 	@Getter 
-	private String picDir;
+	private String[] picDir;
 	@Getter 
 	private String text;
 	@Getter 
@@ -38,7 +40,7 @@ public class Sticker extends BufferedRender{
 	@Getter
 	private int height;
 	
-	public Sticker( String p, String t, Font f, Color fill, int b, int bSize, Color bColor, int w, int h ){
+	public Sticker( String t, Font f, Color fill, int b, int bSize, Color bColor, int w, int h, String... p ){
 		picDir = p;
 		text = t;
 		picture = ImageUtil.openImage(p);
@@ -52,11 +54,7 @@ public class Sticker extends BufferedRender{
 	}
 	
 	public Sticker( String... p ){
-		StringBuilder sb = new StringBuilder();
-		for( String s : p ){
-			sb.append(ImageUtil.FILESEP).append(s);
-		}
-		picDir = sb.toString();
+		picDir = p;
 		text = "";
 		picture = ImageUtil.openImage(picDir);
 		font = new Font("", 0, 0);
@@ -67,18 +65,25 @@ public class Sticker extends BufferedRender{
 		height = picture.getHeight(null);
 	}
 	
-	public void setPicDir( String pd){
-		picDir = pd;
-		dirty = true;
+	public void setPicDir( String... pd ){
+		if( picDir.equals(pd) ){
+			picDir = pd;
+			dirty = true;
+		}
 	}
 	
 	public void setText( String t ){
-		text = t;
+		if( !text.equals(t) ){
+			text = t;
+			dirty = true;
+		}
 	}
 	
 	public void setFont( Font f ){
-		font = f;
-		dirty = true;
+		if( !font.equals(f) ){
+			font = f;
+			dirty = true;
+		}
 	}
 	
 	public void setFillColor( Color fc ){
@@ -89,13 +94,17 @@ public class Sticker extends BufferedRender{
 	}
 	
 	public void setBorder( int b ){
-		border = b;
-		dirty = true;
+		if( border != b ){
+			border = b;
+			dirty = true;
+		}
 	}
 	
 	public void setBorderSize( int bs ){
-		borderSize = bs;
-		dirty = true;
+		if( borderSize != bs ){
+			borderSize = bs;
+			dirty = true;
+		}
 	}
 	
 	public void setBorderColor( Color bc ){
@@ -106,13 +115,17 @@ public class Sticker extends BufferedRender{
 	}
 	
 	public void setWidth( int w ){
-		width = w;
-		dirty = true;
+		if( width != w ){
+			width = w;
+			dirty = true;
+		}
 	}
 	
 	public void setHeight( int h ){
-		height = h;
-		dirty = true;
+		if( height != h ){
+			height = h;
+			dirty = true;
+		}
 	}
 	
 	@Override
@@ -128,7 +141,7 @@ public class Sticker extends BufferedRender{
 			Graphics graphics = lastRender.getGraphics();
 			
 			if( fillColor != null ){
-				System.out.println("fill color is not null");
+				log.atFinest().log("sticker fill color is not null");
 				graphics.setColor(fillColor);
 				graphics.fillRect(0, 0, width, height);
 			}
