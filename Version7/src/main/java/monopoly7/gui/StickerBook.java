@@ -2,6 +2,7 @@ package monopoly7.gui;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,7 +15,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import monopoly7.models.Coordinates;
 import monopoly7.models.RelativeDimensions;
 
 
@@ -244,7 +244,7 @@ public class StickerBook extends BufferedRender{
 	 * was able to update the coordinates. false if any part of this failed 
 	 */
 	public boolean moveStickerAtPage( String pageName, String stickerName, double x, double y ){
-		return moveStickerAtPage( pageName, stickerName, new Coordinates(x,y) );
+		return moveStickerAtPage( pageName, stickerName, new Point2D.Double(x,y) );
 	}
 	
 	/**
@@ -255,7 +255,7 @@ public class StickerBook extends BufferedRender{
 	 * @return	true if the page exists, the sticker exists on the page, and the page
 	 * was able to update the coordinates. false if any part of this failed 
 	 */
-	public boolean moveStickerAtPage( String pageName, String stickerName, Coordinates c ){
+	public boolean moveStickerAtPage( String pageName, String stickerName, Point2D.Double c ){
 		if( titledPages.containsKey(pageName) ){
 			StickerPage page = titledPages.get(pageName);
 			if( page.containsSticker(stickerName) ){
@@ -278,7 +278,7 @@ public class StickerBook extends BufferedRender{
 	 * the returned value is "", then the sticker was not added because the page either
 	 * failed to add it or the page index was beyond the bounds of the render order
 	 */
-	public String addStickerToPage( int pageIndex, Sticker s, Coordinates c, RelativeDimensions d ){
+	public String addStickerToPage( int pageIndex, Sticker s, Point2D.Double c, RelativeDimensions d ){
 		if( pageIndex < 0 || pageIndex >= pageOrder.size() ){
 			return "";
 		}
@@ -320,7 +320,7 @@ public class StickerBook extends BufferedRender{
 	 * failed to add it or the page did not exist inside the StickerBook 
 	 */
 	public String addStickerToPage( String pageName, Sticker s, double x, double y, double width, double height ){
-		return addStickerToPage( pageName, s, new Coordinates(x,y), new RelativeDimensions(width, height) );
+		return addStickerToPage( pageName, s, new Point2D.Double(x,y), new RelativeDimensions(width, height) );
 	}
 	
 	/**
@@ -334,7 +334,7 @@ public class StickerBook extends BufferedRender{
 	 * the returned value is "", then the sticker was not added because the page either
 	 * failed to add it or the page did not exist inside the StickerBook 
 	 */
-	public String addStickerToPage( String pageName, Sticker s, Coordinates c, RelativeDimensions d ){
+	public String addStickerToPage( String pageName, Sticker s, Point2D.Double c, RelativeDimensions d ){
 		if( !titledPages.containsKey(pageName) ){
 			return "";
 		}

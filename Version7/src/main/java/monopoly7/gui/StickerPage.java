@@ -1,6 +1,7 @@
 package monopoly7.gui;
 
 import java.awt.Image;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.*;
-import monopoly7.models.Coordinates;
 import monopoly7.models.RelativeDimensions;
 
 /**
@@ -31,7 +31,7 @@ public class StickerPage extends BufferedRender{
 	/**
 	 * The relative coordinates of all the Stickers
 	 */
-	private Map<String, Coordinates> coords = new HashMap<String, Coordinates>();
+	private Map<String, Point2D.Double> coords = new HashMap<String, Point2D.Double>();
 	
 	/**
 	 * The relative dimensions of all the Stickers
@@ -126,14 +126,14 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public boolean moveSticker( String s, double x, double y ){
-		return moveSticker( s, new Coordinates(x,y) );
+		return moveSticker( s, new Point2D.Double(x,y) );
 	}
 	
 	public boolean moveSticker( String s, int x, int y ){
-		return moveSticker( s, new Coordinates((double)(x/100),(double)(y/100)) );
+		return moveSticker( s, new Point2D.Double((double)(x/100),(double)(y/100)) );
 	}
 	
-	public boolean moveSticker( String s, Coordinates c ){
+	public boolean moveSticker( String s, Point2D.Double c ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
@@ -148,10 +148,10 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public String addSticker( Sticker s, int x, int y, int width, int height ){
-		return addSticker( s, new Coordinates(x, y), new RelativeDimensions( width, height ) );
+		return addSticker( s, new Point2D.Double(x, y), new RelativeDimensions( width, height ) );
 	}
 	
-	public String addSticker( Sticker s, Coordinates c, RelativeDimensions size ){
+	public String addSticker( Sticker s, Point2D.Double c, RelativeDimensions size ){
 		dirty = true;
 		String ret = s.toString();
 		int code = 0;
@@ -206,7 +206,7 @@ public class StickerPage extends BufferedRender{
 		if( isRenderNeeded() ){
 			lastRender = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 			for( String s : paintOrder ){
-				Coordinates c = coords.get(s);
+				Point2D.Double c = coords.get(s);
 				RelativeDimensions rd = sizes.get(s);
 				Sticker stick = stickers.get(s);
 				
