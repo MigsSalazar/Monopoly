@@ -57,3 +57,39 @@ After that, take the created jar, slap it in the same directory as the "resource
 5. [Mockito](https://site.mockito.org/) for behavior testing
 
 All of these free source softwares now hold a special place in my heart for making my life easier. Thank you all. My code does not deserve any of you
+
+## Monopoly 7
+This is the first time I'm starting the README before I finish the project but the goals for this one were made in the first commit so to remind myself of what they are and to make clear my design decisions for anyone that sees this repo, I've included all of them:
+Goals:
+ - no more JButtons or JLabels for displaying stickers. All images!
+ - make the board 100% independent from Monopoly
+ - simplify/break up the Environment class
+ - better image resource handling
+ 	 - find, load, and save images without 10 million edge cases
+ 	 - keep better track of displayed images, esspecially between copies
+ 	 - actually follow Maven conventions with resources
+ - better serialization/de-serialization to allow backwards compatibility without making plain text save files
+   - huffman trees?
+   - encrypted jsons?
+   - smoke signals?
+ - LESS POPUP MESSAGES!!! I THOUGHT V5 WAS SUPPOSED TO FIX THAT
+ - Less dependency on the Environment class
+ - better power separation/adherence to the model-view-controller pattern
+ - possibly opening it up to webapp/online multi-player?
+ - make building textures easier
+ - open the doors to house rules
+ 	 - Free Parking lotto?
+ 	 - 1 rotation around the board before purchases can be made?
+ 	 - No auction?
+ 	 - endless house upgrades?
+ 	 - teaming up?
+ - decent logging from the start!
+ 	 - meaningful logging info
+ 	 - using the correct calls for the correct situations
+ 	 - log instead of crashing
+ 	 - don't create 40GB worth of logging files
+ 		 - it's embarrassing to admit that
+ - allow undo's?
+So obviously I have my work cut out for me. I'll be including these goals in a separate README contianed within the project folder except I'll make these goals as a task list and eventually I'll remove these goals from this master README when that happens. But for now, on to the run instructions!
+### How to run Monopoly Version 7
+So just like Monopoly Version 6, we need Project Lombok installed in our IDE to prevent IDE errors or we need to Delombok it
