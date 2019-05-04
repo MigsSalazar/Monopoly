@@ -95,9 +95,10 @@ So obviously I have my work cut out for me. I'll be including these goals in a s
 So just like Monopoly Version 6, we need [Project Lombok](https://projectlombok.org/) installed in our IDE to prevent IDE errors or we need to [Delombok](https://projectlombok.org/features/delombok) the project to avoid all of that. If you skipped over that part, Project Lombok handles a bunch of boiler plate code like getters and setter, constructors, and logging componenets with annotations instead of code. This comes with the disadvantage that its not... compiler portable?... IDE portable?... developer portable?... It will still run on any JVM but there's extra steps to compile it. [I recommend going to Project Lombok's site by clicking any part of this sentence as they do a better job of explaining this.](https://projectlombok.org/) Besides that, I currently have 3 working maven builds to choose from depending on your needs.
 #### Compile to a JAR
 This one is rather simple as it's just one Maven command
-```mvn package -Dmaven.test.failure.ignore=true
 ```
-This will build the jar with the dependencies included within the jar as well as copy all of the resources as a separate folder within target. This jar is also executable so once the process has completed, you can start playing right away by double clicking the jar!
+mvn package -Dmaven.test.failure.ignore=true
+```
+This will build the jar with the dependencies included within the jar as well as copy all of the resources as a separate folder within target. This jar is also executable so once the process has completed, you can start playing right away by double clicking the jar! I also ignore running any tests because I have yet to write any and, knowing me, I'll auto generate a thousand tests using Eclipse and they'll all fail because I don't implement any of them. Give me some time with this one.
 #### Generate public JavaDocs
 This next one does what the title says, generates a java doc of the whole project. That's right! I write documentation! It crushes my soul just like everyone else, but I strive to make my code readable to everyone, esspecially me three months from now. This command is as generic as it gets with the following command
 ```
