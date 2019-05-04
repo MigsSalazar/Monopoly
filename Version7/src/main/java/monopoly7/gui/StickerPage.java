@@ -1,15 +1,15 @@
 package monopoly7.gui;
 
 import java.awt.Image;
-import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.*;
-import monopoly7.models.RelativeDimensions;
+import lombok.Getter;
+import monopoly7.models.RelativeDim;
+import monopoly7.models.RelativePoint;
 
 /**
  * A record of Stickers, their names, their relative positions, and their relative dimensions.
@@ -25,23 +25,27 @@ import monopoly7.models.RelativeDimensions;
  * @author Miguel Salazar
  * @see monopoly7.gui.Sticker
  */
-@RequiredArgsConstructor
 public class StickerPage extends BufferedRender{
 	
 	/**
 	 * The relative coordinates of all the Stickers
 	 */
-	private Map<String, Point2D.Double> coords = new HashMap<String, Point2D.Double>();
+	private Map<String, RelativePoint> coords = new HashMap<String, RelativePoint>();
 	
 	/**
 	 * The relative dimensions of all the Stickers
 	 */
-	private Map<String, RelativeDimensions> sizes = new HashMap<String, RelativeDimensions>();
+	private Map<String, RelativeDim> sizes = new HashMap<String, RelativeDim>();
 	
 	/**
 	 * Map of every Sticker and its name
 	 */
 	private Map<String, Sticker> stickers = new HashMap<String,Sticker>();
+	
+	/**
+	 * 
+	 */
+	private Map<Integer, Map< Integer, Map<String, Image>>> preRender = new HashMap<Integer, Map<Integer, Map<String, Image>>>();
 	
 	/**
 	 * Stores all the names of the stickers and the order in which they will be rendered.
@@ -51,22 +55,27 @@ public class StickerPage extends BufferedRender{
 	 */
 	private List<String> paintOrder = new ArrayList<String>();
 	
-	@NonNull @Getter
+	@Getter
 	private int width;
-	@NonNull @Getter
+	@Getter
 	private int height;
+	
+	public StickerPage( int w, int h ){
+		width = w;
+		height = h;
+	}
 	
 	public void setWidth( int w ){
 		if( width != w ){
 			width = w;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setHeight( int h ){
 		if( height != h ){
 			height = h;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
@@ -81,7 +90,7 @@ public class StickerPage extends BufferedRender{
 		}
 		paintOrder.remove(s);
 		paintOrder.add(l,s);
-		dirty = true;
+		setDirty( true );
 	}
 	
 	public void paintLast( String s ){
@@ -91,7 +100,7 @@ public class StickerPage extends BufferedRender{
 		
 		paintOrder.remove(s);
 		paintOrder.add(0,  s);
-		dirty = true;
+		setDirty( true );
 	}
 	
 	public void paintFirst( String s ){
@@ -101,23 +110,23 @@ public class StickerPage extends BufferedRender{
 		
 		paintOrder.remove(s);
 		paintOrder.add(s);
-		dirty = true;
+		setDirty( true );
 	}
 	
 	public boolean resizeSticker( String s, int w, int h ){
-		return resizeSticker( s, new RelativeDimensions(w/100,h/100) );
+		return resizeSticker( s, new RelativeDim(w/100,h/100) );
 	}
 	
 	public boolean resizeSticker( String s, double w, double h ){
-		return resizeSticker( s, new RelativeDimensions(w,h) );
+		return resizeSticker( s, new RelativeDim(w,h) );
 	}
 	
-	public boolean resizeSticker( String s, RelativeDimensions rd ){
+	public boolean resizeSticker( String s, RelativeDim rd ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
 		sizes.put(s, rd);
-		dirty = true;
+		setDirty( true );
 		return true;
 	}
 	
@@ -126,20 +135,20 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public boolean moveSticker( String s, double x, double y ){
-		return moveSticker( s, new Point2D.Double(x,y) );
+		return moveSticker( s, new RelativePoint(x,y) );
 	}
 	
 	public boolean moveSticker( String s, int x, int y ){
-		return moveSticker( s, new Point2D.Double((double)(x/100),(double)(y/100)) );
+		return moveSticker( s, new RelativePoint((double)(x/100),(double)(y/100)) );
 	}
 	
-	public boolean moveSticker( String s, Point2D.Double c ){
+	public boolean moveSticker( String s, RelativePoint c ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
 		
 		coords.put(s, c);
-		dirty = true;
+		setDirty( true );
 		return true;
 	}
 	
@@ -148,11 +157,11 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public String addSticker( Sticker s, int x, int y, int width, int height ){
-		return addSticker( s, new Point2D.Double(x, y), new RelativeDimensions( width, height ) );
+		return addSticker( s, new RelativePoint(x, y), new RelativeDim( width, height ) );
 	}
 	
-	public String addSticker( Sticker s, Point2D.Double c, RelativeDimensions size ){
-		dirty = true;
+	public String addSticker( Sticker s, RelativePoint c, RelativeDim size ){
+		setDirty( true );
 		String ret = s.toString();
 		int code = 0;
 		while( existsOnPage(ret+code) ){
@@ -164,7 +173,7 @@ public class StickerPage extends BufferedRender{
 		sizes.put(ret, size);
 		stickers.put(ret, s);
 		paintOrder.add(ret);
-		dirty = true;
+		setDirty( true );
 		return ret;
 	}
 	
@@ -203,11 +212,13 @@ public class StickerPage extends BufferedRender{
 	@Override
 	public Image render(){
 		
-		if( isRenderNeeded() ){
-			lastRender = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Image rendered = getLastRender();
+		
+		if( isDirty() ){
+			setLastRender(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 			for( String s : paintOrder ){
-				Point2D.Double c = coords.get(s);
-				RelativeDimensions rd = sizes.get(s);
+				RelativePoint c = coords.get(s);
+				RelativeDim rd = sizes.get(s);
 				Sticker stick = stickers.get(s);
 				
 				int x = (int)(width*c.getX());
@@ -215,15 +226,29 @@ public class StickerPage extends BufferedRender{
 				int w = (int)(width*rd.getWidth());
 				int h = (int)(height*rd.getHeight());
 				
-				Image scaled = stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING);
+				if( !preRender.containsKey(w) ){
+					preRender.put(w, new HashMap<Integer, Map<String, Image>>());
+				}
 				
-				lastRender.getGraphics().drawImage(scaled, x, y, null);
+				Map<Integer, Map<String, Image>> widthMap = preRender.get(w);
+				if( !widthMap.containsKey(h) ){
+					widthMap.put(h, new HashMap<String, Image>() );
+				}
+				
+				Map<String, Image> heightGotten = widthMap.get(w);
+				if( !heightGotten.containsKey(s) || stick.isDirty() ){
+					heightGotten.put(s, stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING));
+				}
+				
+				Image scaled = heightGotten.get(s);
+				
+				rendered.getGraphics().drawImage(scaled, x, y, null);
 				
 			}
-			dirty = false;
+			setDirty( false );
 		}
 		
-		return lastRender;
+		return rendered;
 	}
 	
 }

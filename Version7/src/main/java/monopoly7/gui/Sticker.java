@@ -1,12 +1,12 @@
 package monopoly7.gui;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.extern.flogger.Flogger;
@@ -68,77 +68,77 @@ public class Sticker extends BufferedRender{
 	public void setPicDir( String... pd ){
 		if( picDir.equals(pd) ){
 			picDir = pd;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setText( String t ){
 		if( !text.equals(t) ){
 			text = t;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setFont( Font f ){
 		if( !font.equals(f) ){
 			font = f;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setFillColor( Color fc ){
 		if( !fc.equals(fillColor) ){
 			fillColor = fc;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setBorder( int b ){
 		if( border != b ){
 			border = b;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setBorderSize( int bs ){
 		if( borderSize != bs ){
 			borderSize = bs;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setBorderColor( Color bc ){
 		if( !bc.equals(borderColor) ){
 			borderColor = bc;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setWidth( int w ){
 		if( width != w ){
 			width = w;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	public void setHeight( int h ){
 		if( height != h ){
 			height = h;
-			dirty = true;
+			setDirty( true );
 		}
 	}
 	
 	@Override
 	public Image render(){
-		if( isRenderNeeded() ){
+		if( isDirty() ){
 			if( !renderCache.containsKey(width) ){
 				renderCache.put(width, new HashMap<Integer, Image>());
 			}
 			if( !renderCache.get(width).containsKey(height) ){
 				renderCache.get(width).put(height, picture.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING));
 			}
-			lastRender = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB );
-			Graphics graphics = lastRender.getGraphics();
+			setLastRender(new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB ));
+			Graphics graphics = getLastRender().getGraphics();
 			
 			if( fillColor != null ){
 				log.atFinest().log("sticker fill color is not null");
@@ -167,9 +167,9 @@ public class Sticker extends BufferedRender{
 				graphics.setFont(font);
 				graphics.drawString(text, 0, height/2);
 			}
-			dirty = false;
+			setDirty( false );
 		}
-		return lastRender;
+		return getLastRender();
 	}
 	
 }

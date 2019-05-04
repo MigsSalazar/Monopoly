@@ -5,24 +5,24 @@ import java.awt.geom.Dimension2D;
 import lombok.Getter;
 import lombok.Setter;
 
-public class RelativeDimensions extends Dimension2D{
+public class RelativeDim extends Dimension2D{
 	
 	@Getter @Setter
 	private double width;
 	@Getter @Setter
 	private double height;
 	
-	public RelativeDimensions(){
+	public RelativeDim(){
 		width = 0.0;
 		height = 0.0;
 	}
 	
-	public RelativeDimensions( double w, double h ){
+	public RelativeDim( double w, double h ){
 		width = w;
 		height = h;
 	}
 	
-	public RelativeDimensions( RelativeDimensions s ){
+	public RelativeDim( RelativeDim s ){
 		width = s.getWidth();
 		height = s.getHeight();
 	}

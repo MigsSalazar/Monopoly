@@ -2,16 +2,22 @@ package monopoly7.gui;
 
 import java.awt.Image;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class BufferedRender {
 	
-	protected Image lastRender = null;
-	protected boolean dirty = true;
+	@Getter @Setter
+	private Image lastRender = null;
+	
+	@Setter
+	private boolean dirty = true;
 	
 	public void unvalidate(){
 		dirty = true;
 	}
-
-	public boolean isRenderNeeded(){
+	
+	public boolean isDirty(){
 		return dirty || lastRender == null;
 	}
 	
