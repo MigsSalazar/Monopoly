@@ -43,7 +43,7 @@ public class StickerPage extends BufferedRender{
 	private Map<String, Sticker> stickers = new HashMap<String,Sticker>();
 	
 	/**
-	 * 
+	 * Stores previously rendered stickers given a certain size.
 	 */
 	private Map<Integer, Map< Integer, Map<String, Image>>> preRender = new HashMap<Integer, Map<Integer, Map<String, Image>>>();
 	
@@ -212,8 +212,6 @@ public class StickerPage extends BufferedRender{
 	@Override
 	public Image render(){
 		
-		Image rendered = getLastRender();
-		
 		if( isDirty() ){
 			setLastRender(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 			for( String s : paintOrder ){
@@ -242,13 +240,13 @@ public class StickerPage extends BufferedRender{
 				
 				Image scaled = heightGotten.get(s);
 				
-				rendered.getGraphics().drawImage(scaled, x, y, null);
+				getLastRender().getGraphics().drawImage(scaled, x, y, null);
 				
 			}
 			setDirty( false );
 		}
 		
-		return rendered;
+		return getLastRender();
 	}
 	
 }
