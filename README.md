@@ -95,15 +95,20 @@ So obviously I have my work cut out for me. I'll be including these goals in a s
 So just like Monopoly Version 6, we need [Project Lombok](https://projectlombok.org/) installed in our IDE to prevent IDE errors or we need to [Delombok](https://projectlombok.org/features/delombok) the project to avoid all of that. If you skipped over that part, Project Lombok handles a bunch of boiler plate code like getters and setter, constructors, and logging componenets with annotations instead of code. This comes with the disadvantage that its not... compiler portable?... IDE portable?... developer portable?... It will still run on any JVM but there's extra steps to compile it. [I recommend going to Project Lombok's site by clicking any part of this sentence as they do a better job of explaining this.](https://projectlombok.org/) Besides that, I currently have 3 working maven builds to choose from depending on your needs.
 #### Compile to a JAR
 This one is rather simple as it's just one Maven command
-`<mvn package -Dmaven.test.failure.ignore=true>`
+```mvn package -Dmaven.test.failure.ignore=true
+```
 This will build the jar with the dependencies included within the jar as well as copy all of the resources as a separate folder within target. This jar is also executable so once the process has completed, you can start playing right away by double clicking the jar!
 #### Generate public JavaDocs
 This next one does what the title says, generates a java doc of the whole project. That's right! I write documentation! It crushes my soul just like everyone else, but I strive to make my code readable to everyone, esspecially me three months from now. This command is as generic as it gets with the following command
-`<mvn javadoc:javadoc>`
+```
+mvn javadoc:javadoc
+```
 I include it in case there's anyone that doesn't know how... like me three minutes ago.
 #### Generate developer JavaDocs
 Thats right! Not only do I write documentation for casual developers who want to use my code, I also write documentation for psychopaths that also want to modify my code! Why are they psychopaths? Because only someone that insane would subject themselves to the torcher of reading my code. However, thanks to my fine grain documentation written for people who want to change/read/modify the source code, this pool of insane developers has widened beyond total psychopaths to partial psychopaths as well. That command goes as follows:
-`<mvn javadoc:javadoc -Dshow="private" -DdestDir="[you/devdocs/directory]">`
+```
+mvn javadoc:javadoc -Dshow="private" -DdestDir="[you/devdocs/directory]"
+```
 Note, maven will generate these developer JavaDocs relative to your "target/site/apidocs" within the project directory but does accept "/../" within the path. For my own developer JavaDocs, I use "/../apidevdocs/" as my destination directory and that works out just fine for me
 ### Used Open Sources Project for V7
 (this was basically copied straight from V6)
