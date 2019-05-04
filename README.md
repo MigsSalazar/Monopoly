@@ -57,3 +57,64 @@ After that, take the created jar, slap it in the same directory as the "resource
 5. [Mockito](https://site.mockito.org/) for behavior testing
 
 All of these free source softwares now hold a special place in my heart for making my life easier. Thank you all. My code does not deserve any of you
+
+## Monopoly 7
+This is the first time I'm starting the README before I finish the project but the goals for this one were made in the first commit so to remind myself of what they are and to make clear my design decisions for anyone that sees this repo, I've included all of them:
+Goals:
+ - no more JButtons or JLabels for displaying stickers. All images!
+ - make the board 100% independent from Monopoly
+ - simplify/break up the Environment class
+ - better image resource handling
+ 	 - find, load, and save images without 10 million edge cases
+ 	 - keep better track of displayed images, esspecially between copies
+ 	 - actually follow Maven conventions with resources
+ - better serialization/de-serialization to allow backwards compatibility without making plain text save files
+   - huffman trees?
+   - encrypted jsons?
+   - smoke signals?
+ - LESS POPUP MESSAGES!!! I THOUGHT V5 WAS SUPPOSED TO FIX THAT
+ - Less dependency on the Environment class
+ - better power separation/adherence to the model-view-controller pattern
+ - possibly opening it up to webapp/online multi-player?
+ - make building textures easier
+ - open the doors to house rules
+ 	 - Free Parking lotto?
+ 	 - 1 rotation around the board before purchases can be made?
+ 	 - No auction?
+ 	 - endless house upgrades?
+ 	 - teaming up?
+ - decent logging from the start!
+ 	 - meaningful logging info
+ 	 - using the correct calls for the correct situations
+ 	 - log instead of crashing
+ 	 - don't create 40GB worth of logging files
+ 		 - it's embarrassing to admit that
+ - allow undo's?
+So obviously I have my work cut out for me. I'll be including these goals in a separate README contianed within the project folder except I'll make these goals as a task list and eventually I'll remove these goals from this master README when that happens. But for now, on to the run instructions!
+### How to run Monopoly Version 7
+So just like Monopoly Version 6, we need [Project Lombok](https://projectlombok.org/) installed in our IDE to prevent IDE errors or we need to [Delombok](https://projectlombok.org/features/delombok) the project to avoid all of that. If you skipped over that part, Project Lombok handles a bunch of boiler plate code like getters and setter, constructors, and logging componenets with annotations instead of code. This comes with the disadvantage that its not... compiler portable?... IDE portable?... developer portable?... It will still run on any JVM but there's extra steps to compile it. [I recommend going to Project Lombok's site by clicking any part of this sentence as they do a better job of explaining this.](https://projectlombok.org/) Besides that, I currently have 3 working maven builds to choose from depending on your needs.
+#### Compile to a JAR
+This one is rather simple as it's just one Maven command
+```
+mvn package -Dmaven.test.failure.ignore=true
+```
+This will build the jar with the dependencies included within the jar as well as copy all of the resources as a separate folder within target. This jar is also executable so once the process has completed, you can start playing right away by double clicking the jar! I also ignore running any tests because I have yet to write any and, knowing me, I'll auto generate a thousand tests using Eclipse and they'll all fail because I don't implement any of them. Give me some time with this one.
+#### Generate public JavaDocs
+This next one does what the title says, generates a java doc of the whole project. That's right! I write documentation! It crushes my soul just like everyone else, but I strive to make my code readable to everyone, esspecially me three months from now. This command is as generic as it gets with the following command
+```
+mvn javadoc:javadoc
+```
+I include it in case there's anyone that doesn't know how... like me three minutes ago.
+#### Generate developer JavaDocs
+Thats right! Not only do I write documentation for casual developers who want to use my code, I also write documentation for psychopaths that also want to modify my code! Why are they psychopaths? Because only someone that insane would subject themselves to the torcher of reading my code. However, thanks to my fine grain documentation written for people who want to change/read/modify the source code, this pool of insane developers has widened beyond total psychopaths to partial psychopaths as well. That command goes as follows:
+```
+mvn javadoc:javadoc -Dshow="private" -DdestDir="[you/devdocs/directory]"
+```
+Note, maven will generate these developer JavaDocs relative to your "target/site/apidocs" within the project directory but does accept "/../" within the path. For my own developer JavaDocs, I use "/../apidevdocs/" as my destination directory and that works out just fine for me
+### Used Open Sources Project for V7
+(this was basically copied straight from V6)
+1. [Project Lombok](https://projectlombok.org/) for writing miles of boiler plate code for me
+2. [Google's Gson](https://github.com/google/gson) for reading and writing json files
+3. [Apache Log4j 2](https://logging.apache.org/log4j/2.x/) for enumerating dolphins (for logging)
+4. [Junit 1.4](https://junit.org/junit4/) for crying over Harambe (unit testing)
+5. [Mockito](https://site.mockito.org/) for behavior testing

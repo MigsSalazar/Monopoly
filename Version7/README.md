@@ -1,0 +1,31 @@
+My current goals for this project
+Goals:
+ - [X] no more JButtons or JLabels for displaying stickers. All images!
+ - [X] make the board 100% independent from Monopoly
+ - [ ] simplify/break up the Environment class
+ - [ ] better image resource handling
+ 	 - [ ] find, load, and save images without 10 million edge cases
+ 	 - [ ] keep better track of displayed images, esspecially between copies
+ 	 - [X] actually follow Maven conventions with resources
+ - [ ] better serialization/de-serialization to allow backwards compatibility without making plain text save files
+   - [ ] huffman trees?
+   - [ ] encrypted jsons?
+   - [ ] smoke signals?
+ - [ ] LESS POPUP MESSAGES!!! I THOUGHT V5 WAS SUPPOSED TO FIX THAT
+ - [ ] Less dependency on the Environment class
+ - [ ] better power separation/adherence to the model-view-controller pattern
+ - [ ] possibly opening it up to webapp/online multi-player?
+ - [ ] make building textures easier
+ - [ ] open the doors to house rules
+ 	 - [ ] Free Parking lotto?
+ 	 - [ ] 1 rotation around the board before purchases can be made?
+ 	 - [ ] No auction?
+ 	 - [ ] endless house upgrades?
+ 	 - [ ] teaming up?
+ - [X] decent logging from the start!
+ 	 - meaningful logging info
+ 	 - using the correct calls for the correct situations
+ 	 - [ ] log instead of crashing
+ 	 - [ ] don't create 40GB worth of logging files
+ 		 - [X] it's embarrassing to admit that
+ - [ ] allow undo's?
