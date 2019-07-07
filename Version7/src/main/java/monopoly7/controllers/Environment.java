@@ -25,6 +25,28 @@ public class Environment {
 	@Expose @Getter @Setter
 	private Map<String, Object> idontknowMoreStuff = new HashMap<String,Object>();
 	
+	public static Environment generateTestEnvironment() {
+		Environment e = new Environment();
+		for( int i=0; i<8; i++ ){
+			e.getPlayers().put("player"+i, "player"+i);
+		}
+		
+		for( int i=0; i<35; i++ ){
+			e.getProperties().put("property"+i, "property"+i);
+		}
+		
+		for( int i=0; i<8; i++ ){
+			e.getSuites().put("suite"+i, "suite"+i);
+		}
+		
+		for( int i=0; i<40; i++ ){
+			e.getCards().put("card"+i, "card"+i);
+		}
+		
+		e.getIdontknowMoreStuff().put("lol", "hi");
+		return e;
+	}
+	
 	@Override
 	public boolean equals( Object o ){
 		if( o instanceof Environment ){

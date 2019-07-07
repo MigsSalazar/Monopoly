@@ -3,6 +3,8 @@ package monopoly7;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
@@ -57,16 +59,16 @@ public class Start {
 		JPanel fek = new JPanel(new BorderLayout());
 		fek.add(b, BorderLayout.CENTER);
 		c.add(fek);
-		
 		temp.getContentPane().addComponentListener(new ComponentAdapter() {
 		    public void componentResized(ComponentEvent componentEvent) {
+				log.atInfo().log("resizing everything");
 		    	b.setScales(temp.getContentPane().getWidth(), temp.getContentPane().getHeight());
 		    	book.setWidth(temp.getContentPane().getWidth());
 		    	book.setHeight(temp.getContentPane().getHeight());
 		    	fek.repaint();
 				temp.repaint();
-				//temp.getContentPane().repaint();
 		    }
+				//temp.getContentPane().repaint();
 		});
 		
 		

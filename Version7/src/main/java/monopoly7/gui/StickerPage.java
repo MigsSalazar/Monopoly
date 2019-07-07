@@ -233,8 +233,12 @@ public class StickerPage extends BufferedRender{
 					widthMap.put(h, new HashMap<String, Image>() );
 				}
 				
-				Map<String, Image> heightGotten = widthMap.get(w);
-				if( !heightGotten.containsKey(s) || stick.isDirty() ){
+				Map<String, Image> heightGotten = widthMap.get(h);
+				if( !heightGotten.containsKey(s) ){
+					heightGotten.put(s, stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING));
+				}
+				
+				if( stick.isDirty() ){
 					heightGotten.put(s, stick.render().getScaledInstance(w, h, Image.SCALE_AREA_AVERAGING));
 				}
 				

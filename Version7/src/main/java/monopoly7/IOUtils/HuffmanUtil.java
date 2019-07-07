@@ -1,16 +1,21 @@
-package monopoly7.controllers;
+package monopoly7.IOUtils;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
-import com.google.gson.*;
+import com.google.gson.GsonBuilder;
+
+import lombok.extern.flogger.Flogger;
+import monopoly7.controllers.Environment;
 
 /**
  * THE GREAT HUFFMAN CLASS
@@ -45,6 +50,7 @@ import com.google.gson.*;
  * @author Miguel Salazar
  *
  */
+@Flogger
 public class HuffmanUtil {
 	
 	static File TREEFILE = new File("printed tree.txt");
@@ -65,319 +71,65 @@ public class HuffmanUtil {
 		
 		//STEP 1: WRITING THE HUFFMAN TREE
 		//make test object
-		Environment e = generateTestEnvironment();
+		Environment e = Environment.generateTestEnvironment();
 		
 		//create json string out of test object
-		Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
-		String out = gson.toJson(e).replaceAll("\n", "");
 		
+		String dir = System.getProperty("user.dir")+System.getProperty("file.separator")+"textOutTree.bin";
+		
+		
+		saveStringToFile(dir, e);
+		
+		//STEP 2: READING THE HUFFMAN TREE
+		//Gson gson2 = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+		Environment e2 = readObjectFromFile(dir, Environment.class);
+		
+		System.out.println("e == e2:"+e.equals(e2));
+		
+	}
+	
+	public static void saveStringToFile( String dir, Object o) {
+		String out = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create().toJson(o).replaceAll("\n", "");
 		//Calculate weights of each char
 		Map<Character, Integer> charWeights = countChars(out);
 		//parse into a huffman tree
 		Node root = stringToHuffman( charWeights );
 		
-		//print out the huffman tree. use for debugging/console output
-		try{
-			root.printTree();
-		}catch(IOException ioe){
-			ioe.printStackTrace();
-		}
-		
 		//get all the binary paths of the chars
 		Map<Character, LinkedList<Integer>> paths = mapCharPaths( root );
 		
 		//figure out how many bytes this will cost
-		int lengthInBytes = 0;
-		byte extraBits = 0;
-		
-		int neededBits;
-		
-		long fullCount = 0;
-		
 		//Calculating the total byte size
-		for( Character c : charWeights.keySet() ){
-			neededBits = charWeights.get(c) * paths.get(c).size();
-			fullCount += neededBits;
-			lengthInBytes += (int)(neededBits/8);
-			extraBits += (byte)(neededBits % 8);
-			lengthInBytes += (int)(extraBits / 8);
-			extraBits %= 8;
-		}
-		System.out.println("fullCount:"+fullCount);
+		long calcedBits = calculateBitSize( charWeights, paths );
+		
+		int lengthInBytes = (int)(calcedBits / 8);
+		byte extraBits = (byte)(calcedBits % 8);
 		//Integer level = Collections.max(lengths.values()); 
 		//parse headers
-		byte[] treeTopography = parseTreeTopography(root);
+		byte[] treeTopography = bytifyTopography(root);
 		
-		//save file dir
-		String dir = System.getProperty("user.dir")+System.getProperty("file.separator")+"textOutTree.bin";
-		try{
-			//System.out.println("chosen dir:"+dir);
-			FileOutputStream fos = new FileOutputStream( new File( dir ) );
-			
-			//Write out how large the header will be
-			System.out.println("topography length:"+treeTopography.length);
-			writeOutInt(treeTopography.length, fos);
-			//fos.write('\n');
-			//Write out the header
-			fos.write(treeTopography);
-			System.out.println("lengths in bytes:"+lengthInBytes);
-			System.out.println("extra bits:"+extraBits);
-			
-			//write out the size of the paths
-			writeOutInt(lengthInBytes, fos);
-			fos.write(extraBits);
-			
-			//flush for safety
-			fos.flush();
-			
-			//write out all the paths of tree without padding
-			writeJsonOut(out, paths, fos);
-			
-			fos.close();
-		}catch( IOException ioe ){
-			ioe.printStackTrace();
-		}
-		
-		//STEP 2: READING THE HUFFMAN TREE
-		
-		FileInputStream fis;
-		try {
-			fis = new FileInputStream( new File(dir) );
-			//first: read in topography as number of bytes (stored as an int)
-			//second: read in topography until topography is done
-			//third: read in the size, as a number of bytes, of the json file which is stored as a long
-			//fourth: read in the number of dangling bits (stored as a byte)
-			//fifth: read in the path until reach the end of the size
-			
-			int topographyLength = readInInt(fis);
-			System.out.println("topography length:"+topographyLength);
-			byte[] header = new byte[topographyLength];
-			fis.read(header);
-			
-			//headerReader(header);
-			Node readRoot = headerParser(header);
-			readRoot.printTree();
-			
-			int dataSize = readInInt( fis );
-			System.out.println("dataSize:"+dataSize);
-			
-			byte dangleBits = (byte)fis.read();
-			
-			System.out.println("dangleBits:"+dangleBits);
-			
-			long fullDataSize = (dataSize * 8) + dangleBits;
-			
-			System.out.println("fullDataSize"+fullDataSize);
-
-			byte[] pathData = new byte[dataSize + 1];
-			
-			fis.read(pathData);
-			
-			fis.close();
-			
-			byte byteAdj = BIGBYTE;
-			int byteIdx = 0;
-			Node cur = readRoot;
-			StringBuilder sb = new StringBuilder();
-			
-			for( long i=0; i<=fullDataSize; i++ ){
-				//System.out.print("i:"+i+",byteIdx:"+byteIdx+",byte:"+pathData[byteIdx]);
-				if( byteAdj == 0 ){
-					byteAdj = BIGBYTE;
-					byteIdx++;
-				}
-				if( !cur.name.equals("") ){
-					sb.append(cur.name);
-					//System.out.println(",letter found:"+cur.name+".");
-					cur = readRoot;
-				}else{
-					//System.out.println();
-				}
-				
-				if( (pathData[byteIdx] & byteAdj) == 0 ){
-					cur = cur.left;
-				}else{
-					cur = cur.right;
-				}
-				
-				byteAdj = (byte)((byteAdj >> 1) & 127);
-				
-			}
-			
-			System.out.println("outString:"+sb.toString());
-			//System.out.println("exit string");
-			String gottenFromRead = sb.toString();
-			Environment e2 = gson.fromJson(gottenFromRead, Environment.class);
-			System.out.println("e==e2:"+(e.equals(e2)));
-			System.out.println("out==gottenFromRead:"+(out.equals(gottenFromRead)));
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
+		fullWriteOut(dir, out, paths, lengthInBytes, extraBits, treeTopography);
 	}
-	
-	private static int readInInt( FileInputStream fis ) throws IOException{
-		int ret = 0;
-		byte[] bytes = new byte[4];
-		fis.read(bytes);
+
+	/**
+	 * Counts the occurences of each character in the string
+	 * Note: the \n char is explicitly ignored
+	 * @param jsoned
+	 * @return
+	 */
+	private static Map<Character, Integer> countChars( String jsoned ){
+		char[] charArr = jsoned.toCharArray();
+		Map<Character, Integer> ret = new HashMap<Character, Integer>();
 		
-		for( int i=0; i<bytes.length; i++ ){
-			ret |= ( (((int)bytes[i]) & 255) << (8*(bytes.length - i - 1)));
+		for( Character c : charArr ){
+			if( c != '\n' ){
+				if( !ret.containsKey(c) ){
+					ret.put(c, jsoned.length() - jsoned.replace(""+c, "").length() );
+				}
+				//ret.put(c, ret.get(c)+1);
+			}
 		}
-		
-		//ret = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
-		
 		return ret;
-	}
-
-	private static Environment generateTestEnvironment() {
-		Environment e = new Environment();
-		for( int i=0; i<8; i++ ){
-			e.getPlayers().put("player"+i, "player"+i);
-		}
-		
-		for( int i=0; i<35; i++ ){
-			e.getProperties().put("property"+i, "property"+i);
-		}
-		
-		for( int i=0; i<8; i++ ){
-			e.getSuites().put("suite"+i, "suite"+i);
-		}
-		
-		for( int i=0; i<40; i++ ){
-			e.getCards().put("card"+i, "card"+i);
-		}
-		
-		e.getIdontknowMoreStuff().put("lol", "hi");
-		return e;
-	}
-
-	private static void writeOutInt( int data, FileOutputStream fos) throws IOException {
-		int padding = 0;
-		int pushables = 0;
-		
-		if( data < 256 && data > 0 ){
-			padding = 3;
-			pushables = 1;
-		}else if( data < 65536 && data > 0 ){
-			padding = 2;
-			pushables = 2;
-		}else{
-			pushables = 4;
-		}
-		
-		for( int i=0; i<padding; i++ ){
-			fos.write('\0');
-		}
-		
-		for( int i=pushables; i>0; i--){
-			int pushing = ((byte)(data >> (8*(i-1)))) & 255;
-			System.out.println("i:"+i+",data:"+data+",pushing:"+pushing);
-			fos.write( pushing );
-		}
-	}
-
-	private static void writeJsonOut(String out, Map<Character, LinkedList<Integer>> paths, FileOutputStream fos)
-			throws IOException {
-		LinkedList<Integer> curPath;
-		byte byteAdj = BIGBYTE;
-		byte writtenByte = 0; 
-		
-		for( Character c : out.toCharArray() ){
-			if( c == '\n' ){
-				continue;
-			}
-			//System.out.println("current char="+c+".");
-			curPath = paths.get(c);
-			for( Integer i : curPath ){
-				if( byteAdj == 0 ){
-					//System.out.println("writtenByte:"+writtenByte);
-					fos.write(writtenByte);
-					byteAdj = BIGBYTE;
-					writtenByte = 0;
-				}
-				if( i == 1 ){
-					writtenByte |= byteAdj;
-				}
-				byteAdj = (byte)((byteAdj >> 1) & 127);
-			}
-		}
-		fos.write(writtenByte);
-	}
-
-	public static void headerReader(byte[] bytes) {
-		for( int i=3, j=1; i<bytes.length; i+=2, j++ ){
-			//char c = (char)( bytes[i] );
-			char c = 0;
-			
-			int upper = (((int)bytes[i-1] ) & 255 ) << 8;
-			int lower = ((int)bytes[i]) & 255;
-			
-			c = (char)(upper | lower);
-			
-			if( c == 0 ){
-				System.out.print("null,");
-			}else{
-				System.out.print(c+",");
-			}
-			
-			if( j != 0 && j % 2 == 0 ){
-				System.out.println();
-			}
-		}
-	}
-	
-	public static Node headerParser( byte[] bytes ){
-		
-		Node root = new Node("", 0);
-
-		Stack<Node> stack = new Stack<Node>();
-		stack.push(root);
-		
-		int i = 5;
-		
-		while( !stack.isEmpty() && i < bytes.length ){
-			
-			while( stack.peek().right != null ){
-				stack.pop();
-			}
-			
-			Node cur = stack.peek();
-			
-			int hup = (((int)bytes[i-3] ) & 255 ) << 8;
-			int hlow = ((int)bytes[i-2]) & 255;
-			char header = (char)(hup | hlow);
-			
-			int cup = (((int)bytes[i-1] ) & 255 ) << 8;
-			int clow = ((int)bytes[i]) & 255;
-			char c = (char)(cup | clow);
-			
-			if( c == '\0' ){
-				if( header == 'L' ){
-					cur.left = new Node("", 0);
-					stack.push(cur.left);
-				}else{
-					cur.right = new Node("", 0);
-					stack.push(cur.right);
-				}
-			}else{
-				if( header == 'L' ){
-					cur.left = new Node(""+c, 0);
-				}else{
-					cur.right = new Node(""+c, 0);
-					stack.pop();
-				}
-			}
-			i += 4;
-			
-		}
-		
-		return root;
 	}
 	
 	/**
@@ -385,7 +137,7 @@ public class HuffmanUtil {
 	 * @param out String to be converted
 	 * @return root node of the huffman tree
 	 */
-	public static Node stringToHuffman( Map<Character, Integer> mappings ){
+	private static Node stringToHuffman( Map<Character, Integer> mappings ){
 		//System.out.println(out);
 		
 		//printMappings( mappings );
@@ -402,29 +154,6 @@ public class HuffmanUtil {
 		
 		return forest.get(0);
 	}
-
-	/**
-	 * Counts the occurences of each character in the string
-	 * Note: the \n char is explicitly ignored
-	 * @param jsoned
-	 * @return
-	 */
-	public static Map<Character, Integer> countChars( String jsoned ){
-		char[] charArr = jsoned.toCharArray();
-		Map<Character, Integer> ret = new HashMap<Character, Integer>();
-		
-		for( Character c : charArr ){
-			if( c != '\n' ){
-				if( !ret.containsKey(c) ){
-					ret.put(c, jsoned.length() - jsoned.replace(""+c, "").length() );
-				}
-				//ret.put(c, ret.get(c)+1);
-			}
-			
-		}
-		
-		return ret;
-	}
 	
 	/**
 	 * Merge sort method that sorts the list of characters based on their occurences in the string
@@ -432,7 +161,7 @@ public class HuffmanUtil {
 	 * @param sortMe
 	 * @return
 	 */
-	public static List<Character> mergeSortMap( Map<Character, Integer> charMap, List<Character> sortMe ){
+	private static List<Character> mergeSortMap( Map<Character, Integer> charMap, List<Character> sortMe ){
 		if( sortMe.isEmpty() ){
 			return null;
 		}else if( sortMe.size() == 1 ){
@@ -469,7 +198,7 @@ public class HuffmanUtil {
 	 * parent/root nodes
 	 * @param forest
 	 */
-	public static void buildTree( LinkedList<Node> forest ){
+	private static void buildTree( LinkedList<Node> forest ){
 		while( forest.size() != 1 ){
 			//System.out.println("size of forest: "+forest.size());
 			Node first = forest.pollFirst();
@@ -486,8 +215,8 @@ public class HuffmanUtil {
 			forest.add(curIdx, newRoot);
 		}
 	}
-	
-	public static Map<Character, LinkedList<Integer>> mapCharPaths( Node root ){
+
+	private static Map<Character, LinkedList<Integer>> mapCharPaths( Node root ){
 		Map<Character, LinkedList<Integer>> paths = new HashMap<Character, LinkedList<Integer>>();
 		for( Character c : root.name.toCharArray() ){
 			LinkedList<Integer> path = new LinkedList<Integer>();
@@ -506,9 +235,18 @@ public class HuffmanUtil {
 		}
 		return paths;
 	}
-	
 
-	public static byte[] parseTreeTopography( Node cur ){
+	private static long calculateBitSize( Map<Character, Integer> weights, Map<Character, LinkedList<Integer>> paths ){
+		long ret = 0L;
+		
+		for( Character c : weights.keySet() ){
+			ret += weights.get(c) * paths.get(c).size();
+		}
+		
+		return ret;
+	}
+	
+	private static byte[] bytifyTopography( Node cur ){
 		ByteArrayOutputStream boas = new ByteArrayOutputStream();
 		//int myPrintOut = (header << 16);
 		//String binPrintOut = decimalConversion((long)header);
@@ -527,10 +265,10 @@ public class HuffmanUtil {
 				boas.write('\0');
 				boas.write('\0');
 				boas.write('L');
-				boas.write(parseTreeTopography(cur.left));
+				boas.write(bytifyTopography(cur.left));
 				boas.write('\0');
 				boas.write('R');
-				boas.write(parseTreeTopography(cur.right));
+				boas.write(bytifyTopography(cur.right));
 			}catch( IOException ioe ){
 				ioe.printStackTrace();
 			}
@@ -538,6 +276,179 @@ public class HuffmanUtil {
 		return boas.toByteArray();
 	}
 	
+	private static void fullWriteOut(String dir, String out, Map<Character, LinkedList<Integer>> paths,
+			int lengthInBytes, byte extraBits, byte[] treeTopography) {
+		try{
+			//System.out.println("chosen dir:"+dir);
+			HighFidelityFileOutputStream fos = new HighFidelityFileOutputStream( new File( dir ) );
+			
+			//Write out how large the header will be
+			fos.writeOutInt(treeTopography.length);
+			//fos.write('\n');
+			//Write out the header
+			fos.write(treeTopography);
+			
+			//write out the size of the paths
+			fos.writeOutInt(lengthInBytes);
+			fos.write(extraBits);
+			
+			//flush for safety
+			fos.flush();
+			
+			//write out all the paths of tree without padding
+			writeJsonOut(out, paths, fos);
+			
+			fos.close();
+		}catch( IOException ioe ){
+			log.atSevere().log(ioe.getMessage());
+			//ioe.printStackTrace();
+		}
+	}
+	
+	private static void writeJsonOut(String out, Map<Character, LinkedList<Integer>> paths, HighFidelityFileOutputStream fos)
+			throws IOException {
+		LinkedList<Integer> curPath;
+		byte byteAdj = BIGBYTE;
+		byte writtenByte = 0; 
+		
+		for( Character c : out.toCharArray() ){
+			if( c == '\n' )
+				continue;
+			//System.out.println("current char="+c+".");
+			curPath = paths.get(c);
+			for( Integer i : curPath ){
+				if( byteAdj == 0 ){
+					//System.out.println("writtenByte:"+writtenByte);
+					fos.write(writtenByte);
+					byteAdj = BIGBYTE;
+					writtenByte = 0;
+				}
+				if( i == 1 ){
+					writtenByte |= byteAdj;
+				}
+				byteAdj = (byte)((byteAdj >> 1) & 127);
+			}
+		}
+		fos.write(writtenByte);
+	}
+
+	/**
+	 * 
+	 * first: read in topography as number of bytes (stored as an int)
+	 * second: read in topography until topography is done
+	 * third: read in the size, as a number of bytes, of the json file which is stored as a long
+	 * fourth: read in the number of dangling bits (stored as a byte)
+	 * fifth: read in the path until reach the end of the size
+	 * @param dir
+	 * @param t
+	 * @return
+	 */
+	public static <T> T readObjectFromFile(String dir, Class<T> t) {
+		
+		HighFidelityFileInputStream fis;
+		try {
+			fis = new HighFidelityFileInputStream( new File(dir) );
+			
+			int topographyLength = fis.readInInt();
+			
+			byte[] header = new byte[topographyLength];
+			fis.read(header);
+			
+			//headerReader(header);
+			Node readRoot = topographizeBytes(header);
+			readRoot.printTree();
+			
+			int dataSize = fis.readInInt();
+
+			byte dangleBits = (byte)fis.read();
+			
+			long fullDataSize = (dataSize * 8) + dangleBits;
+			
+			byte[] pathData = new byte[dataSize + 1];
+			
+			fis.read(pathData);
+			
+			fis.close();
+			
+			//System.out.println("exit string");
+			String gottenFromRead = readJsonIn(readRoot, fullDataSize, pathData);
+			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create().fromJson(gottenFromRead, t);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			log.atSevere().log(e1.getMessage());
+			//e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			log.atSevere().log(e1.getMessage());
+			//e1.printStackTrace();
+		}
+		return null;
+	}
+
+	private static String readJsonIn(Node readRoot, long fullDataSize, byte[] pathData) {
+		byte byteAdj = BIGBYTE;
+		int byteIdx = 0;
+		Node cur = readRoot;
+		StringBuilder sb = new StringBuilder();
+		
+		for( long i=0; i<=fullDataSize; i++ ){
+			//System.out.print("i:"+i+",byteIdx:"+byteIdx+",byte:"+pathData[byteIdx]);
+			if( byteAdj == 0 ){
+				byteAdj = BIGBYTE;
+				byteIdx++;
+			}
+			if( !cur.name.equals("") ){
+				sb.append(cur.name);
+				//System.out.println(",letter found:"+cur.name+".");
+				cur = readRoot;
+			}
+			
+			cur = (0 == (pathData[byteIdx] & byteAdj)) ? cur.left : cur.right;
+			
+			byteAdj = (byte)((byteAdj >> 1) & 127);
+			
+		}
+		return sb.toString();
+	}
+	
+	private static Node topographizeBytes( byte[] bytes ){
+		//Make a root to the tree
+		Node root = new Node("", 0);
+		
+		//Make a stack for a depth first
+		Stack<Node> stack = new Stack<Node>();
+		stack.push(root);
+		
+		for( int i=5; i<bytes.length; i+=4 ){
+			//Pop out any nodes that are full
+			while( stack.peek().right != null ){
+				stack.pop();
+			}
+			//Get the header char
+			int hup = (((int)bytes[i-3] ) & 255 ) << 8;
+			char header = (char)(hup | (((int)bytes[i-2]) & 255));
+			//Get the node name char
+			int cup = (((int)bytes[i-1] ) & 255 ) << 8;
+			char c = (char)(cup | (((int)bytes[i]) & 255));
+			//Create the next node
+			Node next = new Node("", 0);
+			if( header == 'L' ){
+				stack.peek().left = next;
+			}else{
+				stack.peek().right = next;
+			}
+			
+			if( c == '\0' ){
+				stack.push(next);
+			}else{
+				next.name = ""+c;
+				if( header == 'R' ){
+					stack.pop();
+				}
+			}
+		}
+		return root;
+	}
 	
     public static String decimalConversion(long numToConvert){
     	String x = "";
