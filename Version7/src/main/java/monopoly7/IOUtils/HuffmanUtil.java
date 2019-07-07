@@ -14,6 +14,7 @@ import java.util.Stack;
 
 import com.google.gson.GsonBuilder;
 
+import lombok.Cleanup;
 import lombok.extern.flogger.Flogger;
 import monopoly7.controllers.Environment;
 
@@ -277,10 +278,11 @@ public class HuffmanUtil {
 	}
 	
 	private static void fullWriteOut(String dir, String out, Map<Character, LinkedList<Integer>> paths,
-			int lengthInBytes, byte extraBits, byte[] treeTopography) {
+		int lengthInBytes, byte extraBits, byte[] treeTopography) {
+		
+		//System.out.println("chosen dir:"+dir);
 		try{
-			//System.out.println("chosen dir:"+dir);
-			HighFidelityFileOutputStream fos = new HighFidelityFileOutputStream( new File( dir ) );
+			@Cleanup HighFidelityFileOutputStream fos = new HighFidelityFileOutputStream( new File( dir ) );
 			
 			//Write out how large the header will be
 			fos.writeOutInt(treeTopography.length);
@@ -297,12 +299,10 @@ public class HuffmanUtil {
 			
 			//write out all the paths of tree without padding
 			writeJsonOut(out, paths, fos);
-			
-			fos.close();
 		}catch( IOException ioe ){
 			log.atSevere().log(ioe.getMessage());
-			//ioe.printStackTrace();
 		}
+	
 	}
 	
 	private static void writeJsonOut(String out, Map<Character, LinkedList<Integer>> paths, HighFidelityFileOutputStream fos)
@@ -345,9 +345,9 @@ public class HuffmanUtil {
 	 */
 	public static <T> T readObjectFromFile(String dir, Class<T> t) {
 		
-		HighFidelityFileInputStream fis;
+		
 		try {
-			fis = new HighFidelityFileInputStream( new File(dir) );
+			@Cleanup HighFidelityFileInputStream fis = new HighFidelityFileInputStream( new File(dir) );
 			
 			int topographyLength = fis.readInInt();
 			
@@ -368,15 +368,9 @@ public class HuffmanUtil {
 			
 			fis.read(pathData);
 			
-			fis.close();
-			
 			//System.out.println("exit string");
 			String gottenFromRead = readJsonIn(readRoot, fullDataSize, pathData);
 			return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create().fromJson(gottenFromRead, t);
-		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
-			log.atSevere().log(e1.getMessage());
-			//e1.printStackTrace();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			log.atSevere().log(e1.getMessage());
