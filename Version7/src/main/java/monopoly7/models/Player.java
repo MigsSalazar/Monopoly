@@ -163,6 +163,7 @@ public class Player implements PropertyChangeListener {
 	@Override
 	public void propertyStateChanged(PropertyChangeEvent pce) {
 		fireChange( "property changed", ChangeCode.PROPERTIES, null, null );
+
 	}
 	
 }
