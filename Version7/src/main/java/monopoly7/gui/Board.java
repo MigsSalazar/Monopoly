@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.flogger.Flogger;
-
 import monopoly7.io.ImageUtil;
 
 /**

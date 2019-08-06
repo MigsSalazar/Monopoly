@@ -7,10 +7,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 import lombok.extern.flogger.Flogger;
 import monopoly7.gui.Board;
@@ -33,6 +31,9 @@ public class Start {
 			//System.out.println("userDevDir exists");
 			log.atWarning().log("Developer mode discovered. Resetting user.dir");
 			System.setProperty("user.dir", userDevDir);
+			System.setProperty("user.env", "development");
+		}else{
+			System.setProperty("user.env", "production");
 		}
 	}
 	

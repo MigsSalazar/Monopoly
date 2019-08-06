@@ -1,6 +1,7 @@
 package monopoly7.gui;
 
 import java.awt.Image;
+import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import monopoly7.models.RelativeDim;
 import monopoly7.models.RelativePoint;
 
 /**
@@ -35,7 +35,7 @@ public class StickerPage extends BufferedRender{
 	/**
 	 * The relative dimensions of all the Stickers
 	 */
-	private Map<String, RelativeDim> sizes = new HashMap<String, RelativeDim>();
+	private Map<String, Double> sizes = new HashMap<String, Double>();
 	
 	/**
 	 * Map of every Sticker and its name
@@ -114,18 +114,18 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public boolean resizeSticker( String s, int w, int h ){
-		return resizeSticker( s, new RelativeDim(w/100,h/100) );
+		return resizeSticker( s, new Double(w/100,h/100) );
 	}
 	
 	public boolean resizeSticker( String s, double w, double h ){
-		return resizeSticker( s, new RelativeDim(w,h) );
+		return resizeSticker( s, new Double(w,h) );
 	}
 	
-	public boolean resizeSticker( String s, RelativeDim rd ){
+	public boolean resizeSticker( String s, Double dim ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
-		sizes.put(s, rd);
+		sizes.put(s, dim);
 		setDirty( true );
 		return true;
 	}
@@ -157,10 +157,10 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public String addSticker( Sticker s, int x, int y, int width, int height ){
-		return addSticker( s, new RelativePoint(x, y), new RelativeDim( width, height ) );
+		return addSticker( s, new RelativePoint(x, y), new Double( width, height ) );
 	}
 	
-	public String addSticker( Sticker s, RelativePoint c, RelativeDim size ){
+	public String addSticker( Sticker s, RelativePoint c, Double size ){
 		setDirty( true );
 		String ret = s.toString();
 		int code = 0;
@@ -216,13 +216,13 @@ public class StickerPage extends BufferedRender{
 			setLastRender(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 			for( String s : paintOrder ){
 				RelativePoint c = coords.get(s);
-				RelativeDim rd = sizes.get(s);
+				Double rd = sizes.get(s);
 				Sticker stick = stickers.get(s);
 				
 				int x = (int)(width*c.getX());
 				int y = (int)(height*c.getY());
-				int w = (int)(width*rd.getWidth());
-				int h = (int)(height*rd.getHeight());
+				int w = (int)(width*rd.getX());
+				int h = (int)(height*rd.getY());
 				
 				if( !preRender.containsKey(w) ){
 					preRender.put(w, new HashMap<Integer, Map<String, Image>>());

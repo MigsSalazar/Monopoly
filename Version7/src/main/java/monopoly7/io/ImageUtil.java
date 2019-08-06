@@ -1,12 +1,12 @@
 package monopoly7.io;
 
-import lombok.extern.flogger.Flogger;
-
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import lombok.extern.flogger.Flogger;
 
 /**
  * In a lot of ways, this is a logging and directory managing

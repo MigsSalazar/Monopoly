@@ -203,19 +203,4 @@ public class Suite implements Serializable{
 		return highestGrade() - lowestGrade();
 	}
 	
-	/**
-	 * Summation of all the grades in the suite
-	 * @return 		integer - sum of all grades
-	 */
-	public int totalGrade(){
-		int retval = 0;
-		
-		for(Street s : streets){
-			retval += s.getGrade();
-		}
-		
-		return retval;
-	}
-	
-	
 }

@@ -13,6 +13,10 @@ import java.awt.geom.Point2D;
  *
  */
 public class RelativePoint extends Point2D.Double {
+	
+	//I'm not gonna write tests for these. They're just getter's and setters
+	//and lombok handles all of that. If I ever write tests for these, it's
+	//to get that sweet sweet 100% coverage
 
 	public RelativePoint(){
 		super();

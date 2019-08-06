@@ -1,9 +1,5 @@
 package edu.illinois.masalzr2.controllers;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.logging.log4j.core.appender.FileAppender;
 
 import lombok.extern.log4j.Log4j2;
 

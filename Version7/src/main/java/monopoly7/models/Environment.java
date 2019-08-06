@@ -1,4 +1,4 @@
-package monopoly7.controllers;
+package monopoly7.models;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,20 +10,19 @@ import lombok.Setter;
 
 public class Environment {
 	
-	@Expose @Getter @Setter
-	private Map<String, Object> players = new HashMap<String,Object>();
+	public static final Dice dice = Dice.generate2d6();
 	
 	@Expose @Getter @Setter
-	private Map<String, Object> properties = new HashMap<String,Object>();
+	private Map<String, Player> players = new HashMap<String,Player>();
+	
+	@Expose @Getter @Setter
+	private Map<String, Property> properties = new HashMap<String,Property>();
 	
 	@Expose @Getter @Setter
 	private Map<String, Object> cards = new HashMap<String,Object>();
 	
 	@Expose @Getter @Setter
 	private Map<String, Object> suites = new HashMap<String,Object>();
-	
-	@Expose @Getter @Setter
-	private Map<String, Object> idontknowMoreStuff = new HashMap<String,Object>();
 	
 	@Override
 	public boolean equals( Object o ){
@@ -33,7 +32,6 @@ public class Environment {
 			ret &= properties.equals(compare.getProperties());
 			ret &= cards.equals(compare.getCards());
 			ret &= suites.equals(compare.getSuites());
-			ret &= idontknowMoreStuff.equals(compare.getIdontknowMoreStuff());
 			return ret;
 		}else{
 			return false;
