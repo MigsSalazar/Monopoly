@@ -13,7 +13,7 @@ public abstract class BufferedRender {
 	@Setter
 	private boolean dirty = true;
 	
-	public void unvalidate(){
+	public void invalidate(){
 		dirty = true;
 	}
 	

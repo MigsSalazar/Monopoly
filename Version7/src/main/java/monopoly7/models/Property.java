@@ -1,8 +1,12 @@
 package monopoly7.models;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.security.auth.RefreshFailedException;
+import javax.security.auth.Refreshable;
 
 import com.google.gson.annotations.Expose;
 
@@ -11,21 +15,26 @@ import monopoly7.event.PropertyChangeEvent;
 import monopoly7.event.PropertyChangeEvent.ChangeCode;
 import monopoly7.event.PropertyChangeListener;
 
-public abstract class Property {
+public class Property implements Refreshable{
 	
 	@Expose @Getter private String name = "";
 	@Expose @Getter private String owner = "";
+	@Expose @Getter private int[] rents;
 	@Expose @Getter private int position = 0;
 	@Expose @Getter private int cost = 0;
 	@Expose @Getter private int grade = 0;
 	@Expose @Getter private boolean mortgaged = false;
+	@Expose @Getter private String hexColor = "FFFFFF";
+	@Getter private transient Color displayColor = Color.decode(hexColor);
 	
 	private transient List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 	
 	public static final Comparator<Property> POSITION_ORDER = (Property p1, Property p2) -> (p1.getPosition() - p2.getPosition());
 	public static final Comparator<Property> NAME_ORDER = (Property p1, Property p2) -> (p1.getName().compareTo(p2.getName()));
 	
-	public abstract int getRent();
+	public int getRent(){
+		return getRents()[getGrade()];
+	}
 	
 	public void incGrade( int inc ){
 		grade += inc;
@@ -89,6 +98,26 @@ public abstract class Property {
 	
 	public void removePropertyChangeListener( PropertyChangeListener pcl ){
 		listeners.remove(pcl);
+	}
+
+	@Override
+	public boolean isCurrent() {
+		if( listeners != null && displayColor != null ){
+			if( displayColor.equals( Color.decode(hexColor)) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public void refresh() throws RefreshFailedException {
+		if( listeners == null ){
+			listeners = new ArrayList<PropertyChangeListener>();
+		}
+		if( displayColor == null || !displayColor.equals(Color.decode(hexColor))){
+			displayColor = Color.decode(hexColor);
+		}
 	}
 
 }

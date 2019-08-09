@@ -1,15 +1,10 @@
 package monopoly7.models;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public class StreetTest {
-
-	@Test
-	public void testGetRent() {
-		fail("Not yet implemented");
-	}
 
 	@Test
 	public void testIncGrade() {
@@ -27,12 +22,17 @@ public class StreetTest {
 	}
 
 	@Test
-	public void testGetRents() {
+	public void testGetLiquidWorth() {
 		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testGetColor() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetUpgradeCost() {
 		fail("Not yet implemented");
 	}
 

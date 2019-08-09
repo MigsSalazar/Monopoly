@@ -7,7 +7,7 @@ import java.util.Map;
 
 import monopoly7.models.Player;
 import monopoly7.models.Property;
-import monopoly7.models.Street;
+import monopoly7.models.MonopolizableProperty;
 
 public class SuiteUtil {
 	
@@ -38,10 +38,10 @@ public class SuiteUtil {
 		Map<String, List<Property>> holder = new HashMap<String, List<Property>>();
 		
 		for( Property prop : player.getProps().values() ){
-			if( !(prop instanceof Street) )
+			if( !(prop instanceof MonopolizableProperty) )
 				continue;
 			
-			Street street = (Street)prop;
+			MonopolizableProperty street = (MonopolizableProperty)prop;
 			String color = street.getColor();
 			if( !holder.containsKey(color) ){
 				holder.put(color, new ArrayList<Property>());
@@ -49,7 +49,7 @@ public class SuiteUtil {
 			List<Property> tempList = holder.get(color);
 			tempList.add(street);
 			
-			if( tempList.size() == street.getSuiteSize() ){
+			if( tempList.size() == street.getMonopolyLimit() ){
 				ret.put(color, tempList);
 			}
 			

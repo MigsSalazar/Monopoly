@@ -19,7 +19,7 @@ public class Start {
 			//System.out.println("userDevDir exists");
 			log.atWarning().log("Developer mode discovered. Resetting user.dir");
 			System.setProperty("user.dir", userDevDir);
-			System.setProperty("user.env", "development");
+			System.setProperty("user.env", "development");	
 		}else{
 			System.setProperty("user.env", "production");
 		}

@@ -297,7 +297,7 @@ public class PlayerTest {
 		when(nonMortMock.getLiquidWorth()).thenCallRealMethod();
 		when(nonMortMock.getWorth()).thenCallRealMethod();
 		
-		Street upgradedMock = mock(Street.class);
+		MonopolizableProperty upgradedMock = mock(MonopolizableProperty.class);
 		when(upgradedMock.getName()).thenReturn("upgradedMock");
 		when(upgradedMock.isMortgaged()).thenReturn(false);
 		when(upgradedMock.getUpgradeCost()).thenReturn(100);
@@ -449,7 +449,7 @@ public class PlayerTest {
 
 	@Test
 	public void testPropertyStateChanged() {
-		Street test = new Street();
+		MonopolizableProperty test = new MonopolizableProperty();
 		player.addProperty(test);
 		test.upgrade(10);
 		

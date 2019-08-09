@@ -6,16 +6,16 @@ import lombok.Getter;
 import lombok.extern.flogger.Flogger;
 
 @Flogger
-public class Street extends Property {
+public class MonopolizableProperty extends Property {
 
-	@Expose @Getter private String color;
-	@Expose @Getter private int[] rents;
-	@Expose @Getter private int upgradeCost;
-	@Expose @Getter private int suiteSize;
+	@Expose @Getter private String color = "";
+	@Expose @Getter private int upgradeCost = 0;
+	@Expose @Getter private int upgradeLimit = 0;
+	@Expose @Getter private int monopolyLimit = 0;
 	
 	@Override
 	public void incGrade( int inc ){
-		if( getGrade() + inc > 5 || getGrade() + inc < 0 ){
+		if( getGrade() + inc > getUpgradeLimit() || getGrade() + inc < 0 ){
 			log.atWarning().log("invalid grade increase on %s. Current grade: %d. Increment: %d", getName(), getGrade(), inc);
 		}else{
 			incGrade(inc);
@@ -24,7 +24,7 @@ public class Street extends Property {
 	
 	@Override
 	public void decGrade( int dec ){
-		if( getGrade() - dec > 5 || getGrade() - dec < 0 ){
+		if( getGrade() - dec > getUpgradeLimit() || getGrade() - dec < 0 ){
 			log.atWarning().log("invalid grade decrease on %s. Current grade: %d. Decrement: %d", getName(), getGrade(), dec);
 		}else{
 			decGrade(dec);
@@ -33,7 +33,7 @@ public class Street extends Property {
 	
 	@Override
 	public void setGrade( int gr ){
-		if( gr < 0 || gr > 5 ){
+		if( gr < 0 || gr > getUpgradeLimit() ){
 			log.atWarning().log("invalid grade change on %s of: %d", getName(), gr);
 		}else{
 			setGrade(gr);
@@ -46,17 +46,6 @@ public class Street extends Property {
 		if( !isMortgaged() )
 			ret += (getGrade() * getUpgradeCost());
 		return ret;
-	}
-	
-	@Override
-	public int getRent() {
-		int grade = getGrade();
-		if( grade < 0 || grade > 5 ){
-			return rents[getGrade()];
-		}
-		log.atWarning().log("%s has an invalid grade of %d. Setting grade to 0", getName(), grade);
-		super.setGrade(0);
-		return rents[0];
 	}
 
 }

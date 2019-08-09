@@ -66,7 +66,7 @@ public class Sticker extends BufferedRender{
 	}
 	
 	public void setPicDir( String... pd ){
-		if( picDir.equals(pd) ){
+		if( !picDir.equals(pd) ){
 			picDir = pd;
 			setDirty( true );
 		}
@@ -137,39 +137,59 @@ public class Sticker extends BufferedRender{
 			if( !renderCache.get(width).containsKey(height) ){
 				renderCache.get(width).put(height, picture.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING));
 			}
+			
 			setLastRender(new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB ));
 			Graphics graphics = getLastRender().getGraphics();
 			
-			if( fillColor != null ){
-				log.atFinest().log("sticker fill color is not null");
-				graphics.setColor(fillColor);
-				graphics.fillRect(0, 0, width, height);
-			}
+			colorInBox(graphics);
 			
 			graphics.drawImage(renderCache.get(width).get(height), 0, 0, null);
 			
-			if( border > 0 ){
-				graphics.setColor(borderColor);
-				//top border
-				if( border % 2 == 0 )
-					graphics.fillRect(0, 0, width, borderSize);
-				//west border
-				if( border % 3 == 0 )
-					graphics.fillRect(0, 0, borderSize, height);
-				//bottom border
-				if( border % 5 == 0 )
-					graphics.fillRect(0, height-borderSize, width, borderSize);
-				//east border
-				if( border % 7 == 0 ) 
-					graphics.fillRect(width-borderSize, 0, borderSize, height);
-			}
-			if( !text.equalsIgnoreCase("") ){
-				graphics.setFont(font);
-				graphics.drawString(text, 0, height/2);
-			}
+			draworder(graphics);
+			
+			drawText(graphics);
 			setDirty( false );
 		}
 		return getLastRender();
+	}
+
+	private void drawText(Graphics graphics) {
+		if( !text.equalsIgnoreCase("") ){
+			graphics.setFont(font);
+			graphics.drawString(text, 0, height/2);
+		}
+	}
+
+	private void colorInBox(Graphics graphics) {
+		if( fillColor != null ){
+			log.atFinest().log("sticker fill color is not null");
+			graphics.setColor(fillColor);
+			graphics.fillRect(0, 0, width, height);
+		}
+	}
+
+	private void draworder(Graphics graphics) {
+		if( border > 0 ){
+			graphics.setColor(borderColor);
+			switch( pickBorderCase(border) ){
+			case 0: graphics.fillRect(0, 0, width, borderSize);
+					break;
+			case 1: graphics.fillRect(0, 0, borderSize, height);
+					break;
+			case 2: graphics.fillRect(0, height-borderSize, width, borderSize);
+					break;
+			case 3: graphics.fillRect(width-borderSize, 0, borderSize, height);
+					break;
+			default: break;
+			}
+		}
+	}
+	
+	private int pickBorderCase( int b ){
+		return (b % 2 == 0) ? 0 :
+					(b % 3 == 0) ? 1 :
+					(b % 5 == 0) ? 2 :
+					(b % 7 == 0) ? 3 : -1;
 	}
 	
 }
