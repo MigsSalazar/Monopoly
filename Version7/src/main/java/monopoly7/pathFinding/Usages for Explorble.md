@@ -54,18 +54,25 @@ With all that I've written, you'd think I'd be out of things to say, but to the 
 
 ### Monopoly
 You know this was coming first
+
 **Using Classical Coordinates**
 - Returns an UoroborosList of Point2D.Doubles starting at the passed in coordinates. This is would be returned to the caller for the caller to determine how far and how to use the returned points
+
 **Using the Named Use**
 - The characteristic double is a whole value between 0-3(inclusive) stating which side of the board the user is on. The point is then a whole number between 0-10(inclusive) describing how far along the side the piece is positioned. The return is the same as classical coordinates, a list of Point2D.Double's declaring the coordinates to follow.
+
 **Other Uses**
 1. As a space type search engine: Flatten one of the earlier two schemas into one argument and then use the other as a flag to denote what kind of spot to search. For example, the nearest railroad going forward would be enumed to .1, the nearest utility going forward to .2, go to .3, a specific property to .4 with the preceding whole number being a flattened 2D coordinate, .5 being go directly to jail, and any negative number meaning to include the nearest spot going backwards and forwards. This would return a LinkedList starting from the passed in position to the final position requested.
 
-### Chess
-Surprisingly, there's a lit you can do here
+### Chess and Checkers
+Despite the complexity of Chess and the simplicity of Checkers, the logic behind both are very similar as Checkers really just uses an army of short ranged Chess bishops that can be crowned into long ranged Chess bishops.
+
 **Using Classical Coordinates**
 - Assuming each game piece uses a different Explorable instance, simply passing in the coordinates would allow the explorable to include all possible moves for each piece. Filtering out invalid moves would be left to the caller
+
 **Using the Named Use**
 - Using this paradigm, a developer could feasibly have only one instance of Explorable where the point argument would be a flattened 2D coordinate and the characteristics argument would specify what kind of piece is moving. In this case, filtering out invalid moves would be left to the caller
+
 **Other Uses**
-- Sending the whole board! This one is a bit extreme but possible. The first argument would contain the color and selection data where an odd number (1 or 3) represents a white piece and an even number (2 or 4) represents black but only one
+- Sending the whole board! This one is a bit extreme but possible. This methods requires the full use of the double while completely ignoring its numerical value. Instead, you encode all 64 spots of the board into all 62 bits of the double, treating it like a abstract bit type rather than a double! For this, you would encode 1 as friendly pieces that are illegal to land on and 0 as empty spaces or enemies which are legal to land on (assuming it can legally reach those spots). The second argument can then contain the coordinates as a flattened 2D coordinate as the whole value and the type of unit in the decimal. Then, the whole thing can be positive or negative to denote the color of the piece (white or black). This allows the Explorable instance to filter out invalid moves as well as return legally reachable moves.
+
