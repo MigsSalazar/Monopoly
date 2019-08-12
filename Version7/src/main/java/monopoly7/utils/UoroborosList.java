@@ -42,7 +42,7 @@ public class UoroborosList<E> extends LinkedList<E> {
 	
 	@Override
 	public Iterator<E> iterator() {
-		return new UoroborosIterator( this, 0 );
+		return new UoroborosListIterator<E>( this, 0 );
 	}
 
 	@Override
@@ -68,106 +68,24 @@ public class UoroborosList<E> extends LinkedList<E> {
 	
 	@Override
 	public ListIterator<E> listIterator() {
-		return new UoroborosListIterator( this, 0 );
+		return new UoroborosListIterator<E>( this, 0 );
 	}
 
 	@Override
 	public ListIterator<E> listIterator(int index) {
-		// TODO Auto-generated method stub
-		return new UoroborosListIterator( this, recomputeIndex(index) );
+		return new UoroborosListIterator<E>( this, recomputeIndex(index) );
 	}
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
 		UoroborosList<E> ret = new UoroborosList<E>();
+		int mod = fromIndex < toIndex ? 1 : -1;
 		
-		for(int i=fromIndex; i<toIndex; i++){
+		for(int i=fromIndex; i != toIndex; i+=mod){
 			ret.add(get(i));
 		}
 		
 		return ret;
-	}
-	
-	class UoroborosIterator implements Iterator<E>{
-		
-		private UoroborosList<E> iterative;
-		private int curIdx;
-		
-		public UoroborosIterator( UoroborosList<E> list, int idx ){
-			iterative = list;
-			curIdx = idx;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return true;
-		}
-
-		@Override
-		public E next() {
-			curIdx++;
-			return iterative.get(curIdx);
-		}
-		
-	}
-	
-	class UoroborosListIterator implements ListIterator<E>{
-		
-		private UoroborosList<E> iterative;
-		private int curIdx;
-		
-		public UoroborosListIterator( UoroborosList<E> list, int idx){
-			curIdx = idx;
-			iterative = list;
-		}
-
-		@Override
-		public boolean hasNext() {
-			return true;
-		}
-
-		@Override
-		public E next() {
-			curIdx++;
-			return iterative.get(curIdx);
-		}
-
-		@Override
-		public boolean hasPrevious() {
-			return true;
-		}
-
-		@Override
-		public E previous() {
-			curIdx--;
-			return iterative.get(curIdx);
-		}
-
-		@Override
-		public int nextIndex() {
-			return curIdx + 1;
-		}
-
-		@Override
-		public int previousIndex() {
-			return curIdx - 1;
-		}
-
-		@Override
-		public void remove() {
-			iterative.remove(curIdx);
-		}
-
-		@Override
-		public void set(E e) {
-			iterative.set(curIdx, e);
-		}
-
-		@Override
-		public void add(E e) {
-			iterative.add(curIdx, e);
-		}
-		
 	}
 
 }

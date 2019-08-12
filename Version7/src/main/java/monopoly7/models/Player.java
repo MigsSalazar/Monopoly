@@ -162,8 +162,7 @@ public class Player implements PropertyChangeListener {
 
 	@Override
 	public void propertyStateChanged(PropertyChangeEvent pce) {
-		fireChange( "property changed", ChangeCode.PROPERTIES, null, null );
-
+		fireChange( "property changed", ChangeCode.PROPERTIES, pce.getSource(), pce.getSource() );
 	}
 	
 }

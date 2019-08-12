@@ -12,7 +12,7 @@ import com.google.gson.annotations.Expose;
 
 import lombok.Getter;
 import lombok.Setter;
-import monopoly7.gui.Board;
+import monopoly7.gui.GameBoard;
 import monopoly7.gui.StickerBook;
 import monopoly7.io.ImageUtil;
 
@@ -36,6 +36,11 @@ public class Environment implements Refreshable {
 	@Expose @Getter @Setter
 	private Map<String, Object> cards = new HashMap<String,Object>();
 	
+	@Expose @Getter @Setter
+	private String currency = "$";
+	@Expose @Getter @Setter
+	private boolean fancyMove = true;
+	
 	@Expose @Getter
 	private String baseBoardDir = "";
 	@Expose @Getter @Setter
@@ -43,7 +48,7 @@ public class Environment implements Refreshable {
 	@Expose @Getter @Setter
 	private int width = 400;
 	@Getter
-	private transient Board board = new Board( new File(baseBoardDir), new Dimension(width,height));
+	private transient GameBoard board = new GameBoard( new File(baseBoardDir), new Dimension(width,height));
 	@Getter
 	private transient StickerBook stickerBook = new StickerBook(board.getSize());
 	
@@ -101,7 +106,7 @@ public class Environment implements Refreshable {
 			baseBoardDir = ImageUtil.FILE404;
 		}
 		if( board == null ){
-			board = new Board( new File(baseBoardDir), new Dimension(400,400) );
+			board = new GameBoard( new File(baseBoardDir), new Dimension(400,400) );
 			board.setOverlay(stickerBook);
 		}
 		

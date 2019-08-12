@@ -29,7 +29,7 @@ import monopoly7.io.ImageUtil;
  *
  */
 @Flogger
-public class Board extends JPanel{
+public class GameBoard extends JPanel{
 
 	/**
 	 * Added to remove IDE warning.
@@ -74,7 +74,7 @@ public class Board extends JPanel{
 	 * @param base	a file to an image used for the main board
 	 * @param scale	the width and height of the game in pixels
 	 */
-	public Board( File base, Dimension scale ){
+	public GameBoard( File base, Dimension scale ){
 		super();
 		assert base.exists();
 		scales = scale;
@@ -90,7 +90,7 @@ public class Board extends JPanel{
 	 * @param width		how wide to display the game in pixels
 	 * @param height	how tall to display the game in pixels
 	 */
-	public Board( File base, int width, int height ){
+	public GameBoard( File base, int width, int height ){
 		super();
 		assert base.exists();
 		scales = new Dimension( width, height );
