@@ -237,18 +237,7 @@ List<Street> reordered = new ArrayList<Street>();
 		
 		assertEquals(1, small.gradeDisparity());
 	}
-
-	@Test
-	public void testTotalGrade() {
-		assertEquals(0, small.totalGrade());
-		assertEquals(0, big.totalGrade());
-		
-		lane.setGrade(2);
-		avenue.setGrade(5);
-		
-		assertEquals(7, small.totalGrade());
-	}
-
+	
 	@Test
 	public void testGetColorName() {
 		assertEquals("themSmalls", small.getColorName());

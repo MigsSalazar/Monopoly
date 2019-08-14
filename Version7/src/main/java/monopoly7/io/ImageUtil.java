@@ -1,12 +1,12 @@
 package monopoly7.io;
 
-import lombok.extern.flogger.Flogger;
-
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import lombok.extern.flogger.Flogger;
 
 /**
  * In a lot of ways, this is a logging and directory managing
@@ -23,23 +23,23 @@ public class ImageUtil {
 	/**
 	 * Copies directly from the "user.dir" property within the System Properties
 	 */
-	public static final String HOMEDIR = System.getProperty("user.dir");
+	public static String HOMEDIR = System.getProperty("user.dir");
 	/**
 	 * Copies directly from the "file.separator" property within the System Properties
 	 */
-	public static final String FILESEP = System.getProperty("file.separator");
+	public static String FILESEP = System.getProperty("file.separator");
 	/**
 	 * Short for "resource directory", it defines the resource directory from within the home directory
 	 */
-	public static final String RESCDIR = HOMEDIR + FILESEP + "resources" + FILESEP;
+	public static String RESCDIR = HOMEDIR + "resources" + FILESEP;
 	/**
 	 * Appends to the resource directory the texture directory used for defining different textures
 	 */
-	public static final String TEXTURES = RESCDIR + "textures" + FILESEP;
+	public static String TEXTURES = RESCDIR + "textures" + FILESEP;
 	/**
 	 * Selects the 404 image file used when an image cannot be found given the path
 	 */
-	public static final String FILE404 = TEXTURES + "404.png";
+	public static String FILE404 = TEXTURES + "404.png";
 	
 	/**
 	 * Parses the passed in path into a File object and then calls {@link #openImage(File)}

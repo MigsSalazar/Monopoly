@@ -1,6 +1,7 @@
 package monopoly7.gui;
 
 import java.awt.Image;
+import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
-import monopoly7.models.RelativeDim;
-import monopoly7.models.RelativePoint;
+import monopoly7.models.RelativeDimension;
 
 /**
  * A record of Stickers, their names, their relative positions, and their relative dimensions.
@@ -30,12 +30,12 @@ public class StickerPage extends BufferedRender{
 	/**
 	 * The relative coordinates of all the Stickers
 	 */
-	private Map<String, RelativePoint> coords = new HashMap<String, RelativePoint>();
+	private Map<String, Double> coords = new HashMap<String, Double>();
 	
 	/**
 	 * The relative dimensions of all the Stickers
 	 */
-	private Map<String, RelativeDim> sizes = new HashMap<String, RelativeDim>();
+	private Map<String, RelativeDimension> sizes = new HashMap<String, RelativeDimension>();
 	
 	/**
 	 * Map of every Sticker and its name
@@ -114,18 +114,18 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public boolean resizeSticker( String s, int w, int h ){
-		return resizeSticker( s, new RelativeDim(w/100,h/100) );
+		return resizeSticker( s, new RelativeDimension(w/100,h/100) );
 	}
 	
 	public boolean resizeSticker( String s, double w, double h ){
-		return resizeSticker( s, new RelativeDim(w,h) );
+		return resizeSticker( s, new RelativeDimension(w,h) );
 	}
 	
-	public boolean resizeSticker( String s, RelativeDim rd ){
+	public boolean resizeSticker( String s, RelativeDimension dim ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
-		sizes.put(s, rd);
+		sizes.put(s, dim);
 		setDirty( true );
 		return true;
 	}
@@ -135,14 +135,14 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public boolean moveSticker( String s, double x, double y ){
-		return moveSticker( s, new RelativePoint(x,y) );
+		return moveSticker( s, new Double(x,y) );
 	}
 	
 	public boolean moveSticker( String s, int x, int y ){
-		return moveSticker( s, new RelativePoint((double)(x/100),(double)(y/100)) );
+		return moveSticker( s, new Double((double)(x/100),(double)(y/100)) );
 	}
 	
-	public boolean moveSticker( String s, RelativePoint c ){
+	public boolean moveSticker( String s, Double c ){
 		if( !existsOnPage(s) ){
 			return false;
 		}
@@ -157,10 +157,10 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public String addSticker( Sticker s, int x, int y, int width, int height ){
-		return addSticker( s, new RelativePoint(x, y), new RelativeDim( width, height ) );
+		return addSticker( s, new Double(x, y), new RelativeDimension( width, height ) );
 	}
 	
-	public String addSticker( Sticker s, RelativePoint c, RelativeDim size ){
+	public String addSticker( Sticker s, Double c, RelativeDimension size ){
 		setDirty( true );
 		String ret = s.toString();
 		int code = 0;
@@ -214,9 +214,10 @@ public class StickerPage extends BufferedRender{
 		
 		if( isDirty() ){
 			setLastRender(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
+			
 			for( String s : paintOrder ){
-				RelativePoint c = coords.get(s);
-				RelativeDim rd = sizes.get(s);
+				Double c = coords.get(s);
+				RelativeDimension rd = sizes.get(s);
 				Sticker stick = stickers.get(s);
 				
 				int x = (int)(width*c.getX());
