@@ -29,7 +29,7 @@ public class StatsPanel extends JPanel implements PlayerChangeListener {
 	private JLabel bails;
 	private JLabel cash;
 	private PropPanel propPanel;
-	private String currency = Environment.currentGame.getCurrency();
+	private String currency = Environment.mostRecentGame.getCurrency();
 	
 	public StatsPanel( Player p, Sticker s ){
 		super( new GridLayout(0, 1) );

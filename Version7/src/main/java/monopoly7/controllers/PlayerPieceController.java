@@ -46,7 +46,7 @@ public class PlayerPieceController implements PlayerChangeListener, ActionListen
 			int diceRoll = (int)pce.getNewValue() - (int)pce.getOldValue();
 			log.atInfo().log("Player %s has moved by %d", ((Player)pce.getSource()).getName(), diceRoll );
 			UoroborosList<Double> move = (UoroborosList<Double>)path.getReachablePoints(diceRoll, (int)pce.getOldValue());
-			if( Environment.currentGame.isFancyMove() ){
+			if( Environment.mostRecentGame.isFancyMove() ){
 				log.atFiner().log("fancy moved enabled. adding all doubles from start to finish");
 				for( Double d : move ){
 					mover.add(d);

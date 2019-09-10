@@ -13,6 +13,18 @@ public class MonopolizableProperty extends Property {
 	@Expose @Getter private int upgradeLimit = 0;
 	@Expose @Getter private int monopolyLimit = 0;
 	
+	public MonopolizableProperty(){
+		super();
+	}
+	
+	public MonopolizableProperty( String n, String o, int[] r, int p, int c, int g, boolean m, String h, String color, int uc, int ul, int ml ){
+		super( n, o, r, p, c, g, m, h );
+		this.color = color;
+		upgradeCost = uc;
+		upgradeLimit = ul;
+		monopolyLimit = ml;
+	}
+	
 	@Override
 	public void incGrade( int inc ){
 		if( getGrade() + inc > getUpgradeLimit() || getGrade() + inc < 0 ){
