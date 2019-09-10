@@ -52,9 +52,8 @@ After that, take the created jar, slap it in the same directory as the "resource
 
 1. [Project Lombok](https://projectlombok.org/) for writing miles of boiler plate code
 2. [Google's Gson](https://github.com/google/gson) for reading and writing json files
-3. [Apache Log4j 2](https://logging.apache.org/log4j/2.x/) for translating dolphins (logging)
-4. [Junit 1.4](https://junit.org/junit4/) for crying over Harambe (unit testing)
-5. [Mockito](https://site.mockito.org/) for behavior testing
+3. [Junit 1.4](https://junit.org/junit4/) for unit testing
+4. [Mockito](https://site.mockito.org/) for behavior testing
 
 All of these free source softwares now hold a special place in my heart for making my life easier. Thank you all. My code does not deserve any of you
 
