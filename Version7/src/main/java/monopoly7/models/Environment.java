@@ -27,7 +27,7 @@ public class Environment implements Refreshable {
 	public static final int STICKER_PAGE_INDEX_DICE = 2;
 	
 	public static Dice dice = Dice.generate2d6();
-	public static Environment currentGame = null;
+	public static Environment mostRecentGame = null;
 	
 	@Expose @Getter @Setter
 	private Map<String, Player> players = new HashMap<String,Player>();
@@ -47,11 +47,14 @@ public class Environment implements Refreshable {
 	private int height = 400;
 	@Expose @Getter @Setter
 	private int width = 400;
-	@Getter
+	@Getter @Setter
 	private transient GameBoard board = new GameBoard( new File(baseBoardDir), new Dimension(width,height));
-	@Getter
+	@Getter @Setter
 	private transient StickerBook stickerBook = new StickerBook(board.getSize());
 	
+	public Environment(){
+		Environment.mostRecentGame = this;
+	}
 	
 	@Override
 	public boolean equals( Object o ){

@@ -1,5 +1,7 @@
 package monopoly7.models;
 
+import java.util.Collection;
+
 import javax.security.auth.RefreshFailedException;
 
 import lombok.extern.flogger.Flogger;
@@ -8,6 +10,12 @@ import lombok.extern.flogger.Flogger;
 public class DiceDependantProperty extends LinkedGradeProperty {
 	
 	private transient Dice dice = Environment.dice;
+	
+	@SuppressWarnings("unchecked")
+	public DiceDependantProperty( String n, String o, int[] r, int p, int c, int g, boolean m, String h, Collection<? extends LinkedGradeProperty> fellows ){
+		super( n, o, r, p, c, g, m, h, (Collection<LinkedGradeProperty>) fellows );
+		
+	}
 
 	@Override
 	public boolean isCurrent(){

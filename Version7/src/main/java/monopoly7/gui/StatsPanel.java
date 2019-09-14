@@ -16,12 +16,14 @@ public class StatsPanel extends JPanel implements PlayerChangeListener {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9147517110635967256L;
-	protected JLabel name;
-	protected ImageIcon icon;
-	protected JLabel cash;
-	protected Player following;
-	protected String currency = Environment.currentGame.getCurrency();
+
+	private static final long serialVersionUID = 6160162439567376233L;
+	private JLabel name;
+	private JLabel icon;
+	private JLabel bails;
+	private JLabel cash;
+	private PropPanel propPanel;
+	private String currency = Environment.mostRecentGame.getCurrency();
 	
 	public StatsPanel( Player p, ImageIcon i ){
 		super( new GridLayout(0, 1) );

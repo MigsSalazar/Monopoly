@@ -33,6 +33,17 @@ public class Player implements PropertyChangeListener {
 	public static transient final Comparator<Player> NAME_ORDER = (Player o1, Player o2) -> o1.getName().compareTo(o2.getName());
 	public static transient final Comparator<Player> WEALTH_ORDER = (Player o1, Player o2) -> o1.getWealth() - o2.getWealth();
 	
+	public Player(){ /*Place holder constructor to allow for a default constructor*/ }
+	
+	public Player( String n, int i, int p, int c, int b, boolean r ){
+		name = n;
+		id = i;
+		position = p;
+		cash = c;
+		bails = b;
+		bankrupt = r;
+	}
+	
 	public void setCash( int c ){
 		if( cash != c ){
 			int old = cash;

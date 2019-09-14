@@ -347,6 +347,7 @@ public class StickerBook extends BufferedRender{
 		if( !titledPages.containsKey(pageName) ){
 			return "";
 		}
+		setDirty(true);
 		return titledPages.get(pageName).addSticker(s, c, d);
 	}
 	

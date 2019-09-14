@@ -23,7 +23,8 @@ public class Start {
 		}else{
 			System.setProperty("user.env", "production");
 		}
-		
+		MonopolyExceptionHandler masterCatcher = new MonopolyExceptionHandler();
+		Thread.setDefaultUncaughtExceptionHandler(masterCatcher);
 		//USEFUL CODE FOR SAFEKEEPING
 		/*
 		 * JFrame temp;
@@ -38,10 +39,26 @@ public class Start {
 		    }
 				//temp.getContentPane().repaint();
 		});*/
-	}
-
-	public static void main(String[] args) {		
 		
 	}
 
+	public static void main(String[] args) {
+		log.atInfo().log("Starting program");
+		for( String a : args ){
+			log.atInfo().log(a);
+		}
+		if( args.length == 1 ){
+			if( args[0].equals("irb") ){
+				log.atInfo().log("Starting irb");
+				CommandLineInterface cli = new CommandLineInterface();
+				cli.irbRunner();
+			}
+		}
+		
+		log.atInfo().log("Ending program");
+		System.exit(0);
+	}
+
+	
+	
 }

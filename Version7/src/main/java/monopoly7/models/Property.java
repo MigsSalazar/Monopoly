@@ -24,13 +24,29 @@ public class Property implements Refreshable{
 	@Expose @Getter private int cost = 0;
 	@Expose @Getter private int grade = 0;
 	@Expose @Getter private boolean mortgaged = false;
-	@Expose @Getter private String hexColor = "FFFFFF";
+	@Expose @Getter private String hexColor = "0xFFFFFF";
 	@Getter private transient Color displayColor = Color.decode(hexColor);
 	
 	private transient List<PropertyChangeListener> listeners = new ArrayList<PropertyChangeListener>();
 	
 	public static final Comparator<Property> POSITION_ORDER = (Property p1, Property p2) -> (p1.getPosition() - p2.getPosition());
 	public static final Comparator<Property> NAME_ORDER = (Property p1, Property p2) -> (p1.getName().compareTo(p2.getName()));
+	
+	public Property(){
+		
+	}
+	
+	public Property( String n, String o, int[] r, int p, int c, int g, boolean m, String h ){
+		name = n;
+		owner = o;
+		rents = r;
+		position = p;
+		cost = c;
+		grade = g;
+		mortgaged = m;
+		hexColor = h;
+		displayColor = Color.decode(hexColor);
+	}
 	
 	public int getRent(){
 		return getRents()[getGrade()];

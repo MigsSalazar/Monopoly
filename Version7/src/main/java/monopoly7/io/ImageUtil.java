@@ -41,23 +41,33 @@ public class ImageUtil {
 	 */
 	public static String FILE404 = TEXTURES + "404.png";
 	
-	/**
-	 * Parses the passed in path into a File object and then calls {@link #openImage(File)}
-	 * @param dir	an array of a separated file path. This is done to handle file path separators
-	 * without worrying about the OS
-	 * @return	the requested image from the passed in file
-	 */
 	public static Image openImage( String... dir ){
 		StringBuilder sb = new StringBuilder();
-		sb.append(TEXTURES);
+		//sb.append(TEXTURES);
 		for( int i=0; i<dir.length; i++ ){
 			sb.append(dir[i]);
 			if( i != dir.length - 1 ){
 				sb.append(FILESEP);
 			}
 		}
+		log.atInfo().log("Final destination: %s", sb.toString());
 		File f = new File( sb.toString() );
 		return openImage(f);
+	}
+	
+	/**
+	 * Parses the passed in path into a File object and then calls {@link #openImage(File)}
+	 * @param dir	an array of a separated file path. This is done to handle file path separators
+	 * without worrying about the OS
+	 * @return	the requested image from the passed in file
+	 */
+	public static Image openImageInTextures( String... dir ){
+		String[] maker = new String[ dir.length+1 ];
+		maker[0] = TEXTURES;
+		for( int i=0; i<dir.length; i++ ){
+			maker[i+1] = dir[i];
+		}
+		return openImage( maker );
 	}
 	
 	/**
