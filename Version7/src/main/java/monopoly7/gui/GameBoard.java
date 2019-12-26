@@ -188,5 +188,4 @@ public class GameBoard extends JPanel{
 		}
 	}
 	
-	
 }

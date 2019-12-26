@@ -30,7 +30,7 @@ public class MonopolizableProperty extends Property {
 		if( getGrade() + inc > getUpgradeLimit() || getGrade() + inc < 0 ){
 			log.atWarning().log("invalid grade increase on %s. Current grade: %d. Increment: %d", getName(), getGrade(), inc);
 		}else{
-			incGrade(inc);
+			super.incGrade(inc);
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class MonopolizableProperty extends Property {
 		if( getGrade() - dec > getUpgradeLimit() || getGrade() - dec < 0 ){
 			log.atWarning().log("invalid grade decrease on %s. Current grade: %d. Decrement: %d", getName(), getGrade(), dec);
 		}else{
-			decGrade(dec);
+			super.decGrade(dec);
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class MonopolizableProperty extends Property {
 		if( gr < 0 || gr > getUpgradeLimit() ){
 			log.atWarning().log("invalid grade change on %s of: %d", getName(), gr);
 		}else{
-			setGrade(gr);
+			super.setGrade(gr);
 		}
 	}
 	

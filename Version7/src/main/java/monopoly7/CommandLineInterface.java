@@ -3,6 +3,7 @@ package monopoly7;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import monopoly7.models.Environment;
 import monopoly7.models.LinkedGradeProperty;
 import monopoly7.models.MonopolizableProperty;
 import monopoly7.models.Player;
+import monopoly7.models.Property;
 import monopoly7.utils.MultiTypeHashMap;
 
 @Flogger
@@ -57,7 +59,8 @@ public class CommandLineInterface {
 		env.setWidth(500);
 		
 		frame.getContentPane().addComponentListener( new ComponentAdapter() {
-		    public void componentResized(ComponentEvent componentEvent) {
+		    @Override
+			public void componentResized(ComponentEvent componentEvent) {
 				log.atInfo().log("resizing everything");
 		    	int width = frame.getContentPane().getWidth();
 				int height = frame.getContentPane().getHeight();
@@ -94,6 +97,9 @@ public class CommandLineInterface {
 					make( splitCommand );
 					break;
 				case "add":
+					System.out.println(add(splitCommand));
+					break;
+				case "toggle":
 					break;
 				case "list":
 					list();
@@ -103,6 +109,14 @@ public class CommandLineInterface {
 					break;
 				case "roll":
 					break;
+				case "remove":
+					remove(splitCommand);
+					break;
+				case "help":
+					help();
+					break;
+				case "fields":
+					displayFields();
 				default:
 					System.out.println("Invalid command");
 					break;
@@ -113,19 +127,113 @@ public class CommandLineInterface {
 		}
 		kin.close();
 	}
+
+	private int add( String[] cmd ){
+		if( cmd.length < 4 ){
+			System.out.println("Too few arguments");
+			return -1;
+		}
+		if( cmd.length > 4 ){
+			System.out.println("Too many arguments");
+			return -1;
+		}
+		try{
+			if( objects.containsKey(cmd[1]) ){
+				String type = objects.keysToType(cmd[1]).getSimpleName();
+				System.out.println("type of "+cmd[1]+": "+type);
+				int val = Integer.parseInt(cmd[3]);
+				switch( type ){
+				case "Player":
+					return addToPlayer( objects.get(Player.class, cmd[1]), cmd[2], val);
+				case "LinkedGradeProperty":
+					return addToProperty( objects.get(LinkedGradeProperty.class, cmd[1]), cmd[2], val );
+				case "MonopolizableProperty":
+					return addToProperty( objects.get(MonopolizableProperty.class, cmd[1]), cmd[2], val );
+				case "DiceDependantProperty":
+					return addToProperty( objects.get(DiceDependantProperty.class, cmd[1]), cmd[2], val );
+				}
+			}
+		}catch( Exception e ){
+			
+		}
+		return -1;
+	}
+
+	private int addToPlayer( Player p, String field, int val ){
+		switch( field ){
+		case "position":
+			log.atInfo().log("advancing player");
+			p.advancePosition(val);
+			return p.getPosition();
+		case "cash":
+			log.atInfo().log("adding cash to player");
+			p.addCash(val);
+			return p.getCash();
+		case "bails":
+			log.atInfo().log("increasing bail bonds for player");
+			p.addBailout(val);
+			return p.getBails();
+		}
+		
+		return -1;
+	}
+	
+	private int addToProperty( Property p, String field, int val){
+		if( field.equals("grade") ){
+			log.atInfo().log("incrementing property grade");
+			p.incGrade(val);
+			return p.getGrade();
+		}
+		return -1;
+	}
+	
+	private void displayFields() {
+		Field[] fields = Player.class.getDeclaredFields();
+		System.out.println("Player fields:");
+		printFields(fields);
+		System.out.println("\nLinkedGradeProperty");
+		fields = LinkedGradeProperty.class.getDeclaredFields();
+		printFields(fields);
+		System.out.println("\nMonopolizableProperty");
+		fields = MonopolizableProperty.class.getDeclaredFields();
+		printFields(fields);
+		System.out.println("\nDiceDependentProperty");
+		fields = DiceDependantProperty.class.getDeclaredFields();
+		printFields(fields);
+		System.out.println("\nProperty");
+		fields = Property.class.getDeclaredFields();
+		printFields(fields);
+	}
+
+	private void help() {
+		String output = "move [icon name] [x-coord] [y-coord]\n" +
+						"resize [icon name] [width] [height]\n" +
+						"make [type] (if icon[[\"path/to/icon\"] [x-coord] [y-coord] [width] [height] ([name])]\n" +
+						"add [for noun] [add value] [to int field] - returns the new value\n" +
+						"toggle [for noun] [boolean field] - returns new value\n" +
+						"list [all:types:[type]] - depending on the arg, returns all nouns under their type, all types, or all nouns under a type\n" +
+						"roll (dice -implied)\n" +
+						"fields\n" +
+						"remove [object name]";
+		System.out.println(output);
+	}
 	
 	@SuppressWarnings("unchecked")
 	private <T> void list(){
 		System.out.println("Disaplaying all objects\n"
 						 + "=======================");
 		for( Class<?> t : objects.typeSet() ){
+			if( t == null ){
+				continue;
+			}
 			System.out.println(t.getName()+":");
-			Map<String, T> map = (Map<String, T>) objects.keysToType(t);
+			Map<String, T> map = (Map<String, T>) objects.getMapOfType(t);
 			for( String key : map.keySet() ){
-				System.out.printf("  - %s: %s\n", key, map.get(key).toString());
+				System.out.printf("  - %s: %s ofType %s\n", key, map.get(key).toString(), map.get(key).getClass().toString());
 			}
 		}
 	}
+	
 	
 	private void make( String[] cmd ){
 		if( cmd.length < 2 ){
@@ -154,7 +262,7 @@ public class CommandLineInterface {
 				System.out.print(r.getName());
 				break;
 			case "utility":
-				DiceDependantProperty u = new DiceDependantProperty( "util"+objectCount, "", new int[]{4,10}, objectCount, 150, 0, false, "FFFFFF", utils );
+				DiceDependantProperty u = new DiceDependantProperty( "util"+objectCount, "", new int[]{4,10}, objectCount, 150, 0, false, "0xFFFFFF", utils );
 				env.getProperties().put(u.getName(), u);
 				objects.put(u.getName(), u);
 				System.out.print(u.getName());
@@ -164,6 +272,10 @@ public class CommandLineInterface {
 			}
 			
 		}else{
+			if( cmd.length != 7 && cmd.length != 8){
+				System.out.println("Invalid number of arguments");
+				return;
+			}
 			Sticker s = new Sticker( ImageUtil.TEXTURES, "default", cmd[2]);
 			try{
 				//Sticker( String... p )
@@ -172,8 +284,10 @@ public class CommandLineInterface {
 											Double.parseDouble(cmd[4]), //y coord
 											Double.parseDouble(cmd[5]), //width
 											Double.parseDouble(cmd[6]));//height
-				objects.put(iconName, s);
-				//book.render();
+				
+				objects.put( (cmd.length == 8 ? cmd[7] : iconName), iconName);
+				book.render();
+				board.repaint();
 				frame.repaint();
 				System.out.print(iconName);
 			}catch( NumberFormatException nfe ){
@@ -186,7 +300,7 @@ public class CommandLineInterface {
 		objectCount++;
 	}
 	
-	void resize( String[] cmd ){
+	private void move( String[] cmd ){
 		if( cmd.length < 4 ){
 			System.out.println("Too few arguments");
 			return;
@@ -196,11 +310,37 @@ public class CommandLineInterface {
 		}
 		double x = Double.parseDouble(cmd[2]);
 		double y = Double.parseDouble(cmd[3]);
-		book.resizeStickerAtPage(0, cmd[1], x, y);
+		book.moveStickerAtPage(0, objects.get(String.class, cmd[1]), x, y);
+		board.repaint();
 		frame.repaint();
 	}
 	
-	void move( String[] cmd ){
+	private void printFields(Field[] fields) {
+		for( Field f : fields){
+			System.out.println(f.getType() + ": " + f.getName());
+		}
+	}
+	
+	private boolean remove(String[] cmd){
+		if( cmd.length > 2 ){
+			System.out.println("Too many arguments");
+		}else if( cmd.length < 2 ){
+			System.out.println("Too few arguments");
+		}
+		Object gotten = objects.remove(cmd[1]);
+		System.out.println("gotten != null: "+(gotten != null));
+		if( gotten instanceof String ){
+			log.atInfo().log("Trying to remove icon");
+			//yes, its an instance of string, but that means we can assume it is an icon
+			book.removeStickerAtPage((String)gotten, 0);
+			book.render();
+			board.repaint();
+			frame.repaint();
+		}
+		return gotten != null;
+	}
+	
+	private void resize( String[] cmd ){
 		if( cmd.length < 4 ){
 			System.out.println("Too few arguments");
 			return;
@@ -210,7 +350,12 @@ public class CommandLineInterface {
 		}
 		double x = Double.parseDouble(cmd[2]);
 		double y = Double.parseDouble(cmd[3]);
-		book.moveStickerAtPage(0, cmd[1], x, y);
+		log.atInfo().log("object at "+cmd[1]+": "+objects.get(String.class, cmd[1]));
+		book.resizeStickerAtPage(0, objects.get(String.class, cmd[1]), x, y);
+		
+		
+		book.render();
+		board.repaint();
 		frame.repaint();
 	}
 

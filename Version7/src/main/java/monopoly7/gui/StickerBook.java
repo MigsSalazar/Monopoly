@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.extern.flogger.Flogger;
 import monopoly7.models.RelativeDimension;
 
 
@@ -28,6 +29,7 @@ import monopoly7.models.RelativeDimension;
  * @author Miguel Salazar
  *
  */
+@Flogger
 public class StickerBook extends BufferedRender{
 	
 	/**
@@ -71,6 +73,10 @@ public class StickerBook extends BufferedRender{
 		height = size.height;
 	}
 
+	public boolean containsPage( String name ){
+		return titledPages.containsKey(name);
+	}
+	
 	/**
 	 * Sets the width to w and change marks the StickerBook as in need 
 	 * of re-rendering if, and only if, w is not equal the current width
@@ -218,6 +224,7 @@ public class StickerBook extends BufferedRender{
 		if( titledPages.containsKey(pageName) ){
 			StickerPage page = titledPages.get(pageName);
 			if( page.containsSticker(stickerName) ){
+				log.atInfo().log("Sticker %s exists in page %s. requesting page to resize", stickerName, pageName);
 				setDirty( true );
 				return page.resizeSticker(stickerName, dim);
 			}
@@ -268,9 +275,11 @@ public class StickerBook extends BufferedRender{
 		if( titledPages.containsKey(pageName) ){
 			StickerPage page = titledPages.get(pageName);
 			if( page.containsSticker(stickerName) ){
+				log.atInfo().log("moving sticker");
 				setDirty( true );
 				return page.moveSticker(stickerName, c);
 			}
+			log.atInfo().log("Could not move sticker from book level");
 		}
 		return false;
 	}
@@ -454,6 +463,14 @@ public class StickerBook extends BufferedRender{
 		pageOrder.add(index, name);
 		setDirty( true );
 		return name;
+	}
+	
+	public boolean removeStickerAtPage( String stickerName, int pageIdx){
+		if( pageIdx < pageOrder.size() && titledPages.containsKey(pageOrder.get(pageIdx)) ){
+			setDirty(true);
+			return titledPages.get(pageOrder.get(pageIdx)).removeSticker(stickerName);
+		}
+		return false;
 	}
 	
 	@Override

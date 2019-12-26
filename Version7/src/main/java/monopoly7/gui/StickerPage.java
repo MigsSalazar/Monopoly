@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
+import lombok.extern.flogger.Flogger;
 import monopoly7.models.RelativeDimension;
 
 /**
@@ -25,6 +26,7 @@ import monopoly7.models.RelativeDimension;
  * @author Miguel Salazar
  * @see monopoly7.gui.Sticker
  */
+@Flogger
 public class StickerPage extends BufferedRender{
 	
 	/**
@@ -80,41 +82,19 @@ public class StickerPage extends BufferedRender{
 	}
 	
 	public void setPaintPriority( String s, int l ){
-		if( l < 0 ){
-			paintLast( s );
-			return;
+		if( !existsOnPage(s) ){
+			paintOrder.remove(s);
+			paintOrder.add(l,s);
+			setDirty( true );
 		}
-		if( l >= paintOrder.size() ){
-			paintFirst(s);
-			return;
-		}
-		paintOrder.remove(s);
-		paintOrder.add(l,s);
-		setDirty( true );
 	}
 	
 	public void paintLast( String s ){
-		if( !existsOnPage(s) ){
-			return;
-		}
-		
-		paintOrder.remove(s);
-		paintOrder.add(0,  s);
-		setDirty( true );
+		setPaintPriority( s, 0 );
 	}
 	
 	public void paintFirst( String s ){
-		if( !existsOnPage(s) ){
-			return;
-		}
-		
-		paintOrder.remove(s);
-		paintOrder.add(s);
-		setDirty( true );
-	}
-	
-	public boolean resizeSticker( String s, int w, int h ){
-		return resizeSticker( s, new RelativeDimension(w/100,h/100) );
+		setPaintPriority(s, paintOrder.size()-1);
 	}
 	
 	public boolean resizeSticker( String s, double w, double h ){
@@ -127,6 +107,7 @@ public class StickerPage extends BufferedRender{
 		}
 		sizes.put(s, dim);
 		setDirty( true );
+		log.atInfo().log( "Sticker %s has changed dimensions", s );
 		return true;
 	}
 	
@@ -138,15 +119,12 @@ public class StickerPage extends BufferedRender{
 		return moveSticker( s, new Double(x,y) );
 	}
 	
-	public boolean moveSticker( String s, int x, int y ){
-		return moveSticker( s, new Double((double)(x/100),(double)(y/100)) );
-	}
-	
 	public boolean moveSticker( String s, Double c ){
 		if( !existsOnPage(s) ){
+			log.atInfo().log("Icon does not exit on page");
 			return false;
 		}
-		
+		log.atInfo().log("moving sticker");
 		coords.put(s, c);
 		setDirty( true );
 		return true;
@@ -156,7 +134,7 @@ public class StickerPage extends BufferedRender{
 		return addSticker( s, 0, 0, 10, 10 );
 	}
 	
-	public String addSticker( Sticker s, int x, int y, int width, int height ){
+	public String addSticker( Sticker s, double x, double y, double width, double height ){
 		return addSticker( s, new Double(x, y), new RelativeDimension( width, height ) );
 	}
 	
@@ -175,6 +153,18 @@ public class StickerPage extends BufferedRender{
 		paintOrder.add(ret);
 		setDirty( true );
 		return ret;
+	}
+	
+	public boolean removeSticker( String s ){
+		if( existsOnPage(s) ){
+			paintOrder.remove(s);
+			coords.remove(s);
+			sizes.remove(s);
+			stickers.remove(s);
+			setDirty(true);
+			return true;
+		}
+		return false;
 	}
 	
 	public int removeAllStickerOf( Sticker s ){
