@@ -19,10 +19,11 @@ public class StatsPanel extends JPanel implements PlayerChangeListener {
 
 	private static final long serialVersionUID = 6160162439567376233L;
 	private JLabel name;
-	private JLabel icon;
+	protected ImageIcon icon;
 	private JLabel bails;
 	private JLabel cash;
-	private PropPanel propPanel;
+	//private PropPanel propPanel;
+	private Player following;
 	private String currency = Environment.mostRecentGame.getCurrency();
 	
 	public StatsPanel( Player p, ImageIcon i ){
@@ -32,7 +33,7 @@ public class StatsPanel extends JPanel implements PlayerChangeListener {
 		icon = i;
 		cash = new JLabel( cashString(p.getCash()) );
 		
-		this.add( new JLabel( icon ) );
+		this.add( new JLabel(icon) );
 		this.add(name);
 		this.add(cash);
 	}

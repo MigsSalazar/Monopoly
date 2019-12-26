@@ -26,6 +26,7 @@ public class ExtendedStatsPanel extends StatsPanel implements PlayerChangeListen
 	
 	private JLabel bails;
 	private PropPanel propPanel;
+	private Player following;
 	
 	public ExtendedStatsPanel( Player p, ImageIcon i ){
 		super(p,i);
