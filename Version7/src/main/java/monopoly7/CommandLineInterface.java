@@ -100,6 +100,10 @@ public class CommandLineInterface {
 					System.out.println(add(splitCommand));
 					break;
 				case "toggle":
+					System.out.println(toggle(splitCommand));
+					break;
+				case "give":
+					give(splitCommand);
 					break;
 				case "list":
 					list();
@@ -126,6 +130,59 @@ public class CommandLineInterface {
 			}
 		}
 		kin.close();
+	}
+	
+	private boolean toggle( String[] cmd ){
+		if( cmd.length < 3 ){
+			System.out.println("Too few arguments");
+			return false;
+		}
+		if( cmd.length > 3 ){
+			System.out.println("Too many arguments");
+			return false;
+		}
+		try{
+			if( objects.containsKey(cmd[1]) ){
+				String type = objects.keysToType(cmd[1]).getSimpleName();
+				System.out.println("type of "+cmd[1]+": "+type);
+				//int val = Integer.parseInt(cmd[3]);
+				switch( type ){
+				case "Player":
+					if( cmd[2].equals("bankrupt") ){
+						log.atInfo().log("toggling player bankruptcy status");
+						Player p = objects.get(Player.class, cmd[1]);
+						p.setBankrupt( !p.isBankrupt() );
+						return p.isBankrupt();
+					}
+				case "LinkedGradeProperty":
+				case "MonopolizableProperty":
+				case "DiceDependantProperty":
+					Property p = (Property)objects.get(cmd[1]);
+					p.setMortgaged(!p.isMortgaged());
+					return p.isMortgaged();
+				}
+			}
+		}catch( Exception e ){
+			log.atWarning().withCause(e);
+		}
+		return false;
+	}
+	
+	private void give( String[] cmd ){
+		if( cmd.length < 3 ){
+			System.out.println( "Too few arguments" );
+			return;
+		}
+		if( cmd.length > 3 ){
+			System.out.println( "Too many arguments" );
+			return;
+		}
+		
+		if( objects.keysToType(cmd[1]).equals(Player.class) && objects.keysToType(cmd[2]).equals(Property.class) ){
+			Player pl = objects.get(Player.class, cmd[1]);
+			Property pr = (Property) objects.get(cmd[2]);
+			pl.addProperty(pr);
+		}
 	}
 
 	private int add( String[] cmd ){

@@ -449,12 +449,20 @@ public class PlayerTest {
 
 	@Test
 	public void testPropertyStateChanged() {
-		MonopolizableProperty test = new MonopolizableProperty();
+		int[] rents = {1,2,3,4,5,6};
+		MonopolizableProperty test = new MonopolizableProperty("","",rents,0,0,0,false,"0xFFFFFF","0xFFFFFF",0,5,3);
 		player.addProperty(test);
-		test.upgrade(10);
+
+		verify( changeMock, times(1) ).playerStateChanged(anyObject());
+		playerChangeEventAsserts( "obtained "+test.getName(), ChangeCode.PROPERTIES, player, null, test );
 		
+		test.incGrade(10);
+		verify( changeMock, times(1) ).playerStateChanged(anyObject());
+		playerChangeEventAsserts( "obtained "+test.getName(), ChangeCode.PROPERTIES, player, null, test );
+		
+		test.incGrade(1);
 		verify( changeMock, times(2) ).playerStateChanged(anyObject());
-		playerChangeEventAsserts( "property changed", ChangeCode.PROPERTIES, player, null, null );
+		playerChangeEventAsserts( "property changed", ChangeCode.PROPERTIES, player, test, test );
 	}
 
 }

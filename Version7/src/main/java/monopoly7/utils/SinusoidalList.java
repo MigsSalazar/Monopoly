@@ -61,7 +61,7 @@ public class SinusoidalList<E> extends LinkedList<E> {
 
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
-		UoroborosList<E> ret = new UoroborosList<E>();
+		SinusoidalList<E> ret = new SinusoidalList<E>();
 		
 		for(int i=fromIndex; i<toIndex; i++){
 			ret.add(get(i));

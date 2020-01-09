@@ -3,11 +3,11 @@ package monopoly7.pathFinding;
 import java.awt.geom.Point2D.Double;
 import java.util.List;
 
-import monopoly7.utils.UoroborosList;
+import monopoly7.utils.RevolvingList;
 
 public class MonopolyExplorable implements Explorable {
 
-	private UoroborosList<Double> points = new UoroborosList<Double>();
+	private RevolvingList<Double> points = new RevolvingList<Double>();
 	
 	@Override
 	/**

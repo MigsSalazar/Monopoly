@@ -16,7 +16,7 @@ import monopoly7.models.Environment;
 import monopoly7.models.Player;
 import monopoly7.models.RelativeDimension;
 import monopoly7.pathFinding.MonopolyExplorable;
-import monopoly7.utils.UoroborosList;
+import monopoly7.utils.RevolvingList;
 
 @Flogger
 public class PlayerPieceController implements PlayerChangeListener, ActionListener{
@@ -45,7 +45,7 @@ public class PlayerPieceController implements PlayerChangeListener, ActionListen
 		if( pce.getSource() instanceof Player && pce.getStatus() == PlayerChangeEvent.ChangeCode.POSITION ){
 			int diceRoll = (int)pce.getNewValue() - (int)pce.getOldValue();
 			log.atInfo().log("Player %s has moved by %d", ((Player)pce.getSource()).getName(), diceRoll );
-			UoroborosList<Double> move = (UoroborosList<Double>)path.getReachablePoints(diceRoll, (int)pce.getOldValue());
+			RevolvingList<Double> move = (RevolvingList<Double>)path.getReachablePoints(diceRoll, (int)pce.getOldValue());
 			if( Environment.mostRecentGame.isFancyMove() ){
 				log.atFiner().log("fancy moved enabled. adding all doubles from start to finish");
 				for( Double d : move ){

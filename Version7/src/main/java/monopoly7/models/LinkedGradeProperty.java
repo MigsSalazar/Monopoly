@@ -16,9 +16,11 @@ public class LinkedGradeProperty extends Property implements PropertyChangeListe
 	}
 
 	private boolean validEvent( PropertyChangeEvent pce ){
-		return (int)pce.getNewValue() != getGrade() &&
-				pce.getSource() == PropertyChangeEvent.ChangeCode.GRADE &&
-				pce.getSource().getClass().equals(this.getClass());
+		return pce.getNewValue() instanceof Integer &&
+				(int)pce.getNewValue() != this.getGrade() &&
+				pce.getStatus() == PropertyChangeEvent.ChangeCode.GRADE &&
+				pce.getSource() instanceof LinkedGradeProperty &&
+				!pce.getSource().equals(this);
 	}
 	
 	@Override
